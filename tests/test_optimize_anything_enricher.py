@@ -3,7 +3,7 @@
 
 """Tests that the reflective dataset enricher reaches the optimize_anything path.
 
-``gepa.optimize`` threads the enricher into the reflective proposer directly.
+``async_gepa.optimize`` threads the enricher into the reflective proposer directly.
 ``optimize_anything`` builds the same proposer from a ``GEPAConfig``, so the
 hook has to travel as a ``ReflectionConfig`` field or it is silently
 unavailable to every pipeline built on that entry point.
@@ -12,8 +12,8 @@ unavailable to every pipeline built on that entry point.
 import io
 from contextlib import redirect_stderr, redirect_stdout
 
-from gepa.gepa_launcher import EngineConfig, GEPAConfig, ReflectionConfig, optimize_anything
-from gepa.oa.config import OptimizeAnythingConfig
+from async_gepa.gepa_launcher import EngineConfig, GEPAConfig, ReflectionConfig, optimize_anything
+from async_gepa.oa.config import OptimizeAnythingConfig
 
 FINDING = "Spurious_Fact_Introduced"
 
@@ -99,7 +99,7 @@ class TestOptimizeAnythingEngine:
     """The OA layer forwards engine_config verbatim, so the field arrives with it."""
 
     def test_enricher_survives_the_engine_config_round_trip(self):
-        from gepa.optimize_anything import optimize_anything as oa_optimize_anything
+        from async_gepa.optimize_anything import optimize_anything as oa_optimize_anything
 
         record, prompts = {"calls": 0, "components": []}, []
         config = OptimizeAnythingConfig(

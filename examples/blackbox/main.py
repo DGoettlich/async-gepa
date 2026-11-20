@@ -7,7 +7,7 @@ from examples.blackbox.utils import (
     execute_code,
     extract_best_xs,
 )
-from gepa.optimize_anything import (
+from async_gepa.optimize_anything import (
     EngineConfig,
     GEPAConfig,
     ReflectionConfig,

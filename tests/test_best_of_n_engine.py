@@ -19,15 +19,15 @@ Two bugs, both in the ``run()`` eval block:
 
 from __future__ import annotations
 
-import gepa.oa.engines.best_of_n as bon
-from gepa.oa.budget import BudgetTracker
-from gepa.oa.config import OptimizeAnythingConfig
-from gepa.oa.eval_server import EvalServer
-from gepa.oa.task import Task
+import async_gepa.oa.engines.best_of_n as bon
+from async_gepa.oa.budget import BudgetTracker
+from async_gepa.oa.config import OptimizeAnythingConfig
+from async_gepa.oa.eval_server import EvalServer
+from async_gepa.oa.task import Task
 
 
 class _FakeLM:
-    """Stand-in for ``gepa.lm.LM``: returns a distinct fenced candidate per
+    """Stand-in for ``async_gepa.lm.LM``: returns a distinct fenced candidate per
     call and carries a ``total_cost`` attribute (read by the engine)."""
 
     def __init__(self, *args, **kwargs):

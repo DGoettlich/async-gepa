@@ -5,7 +5,7 @@ from examples.circle_packing.utils import (
     execute_code,
     extract_best_circles,
 )
-from gepa.optimize_anything import (
+from async_gepa.optimize_anything import (
     EngineConfig,
     GEPAConfig,
     OptimizationState,

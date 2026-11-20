@@ -213,8 +213,8 @@ jobs:
         run: uv run -p .venv python -m build
       - name: Install built package
         run: uv pip install dist/*.whl -p .venv
-      - name: Test import gepa
-        run: uv run -p .venv python -c "import gepa"
+      - name: Test import async_gepa
+        run: uv run -p .venv python -c "import async_gepa"
       # Ensure gepa[dspy] does not bring in new packages
       - name: Install dependencies
         run: |

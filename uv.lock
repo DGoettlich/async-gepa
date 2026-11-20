@@ -1070,7 +1070,7 @@ http = [
 ]
 
 [[package]]
-name = "gepa"
+name = "async-gepa"
 version = "0.1.4"
 source = { editable = "." }
 
@@ -1178,10 +1178,10 @@ requires-dist = [
     { name = "datasets", marker = "python_full_version >= '3.14' and extra == 'full'", specifier = ">=4.5.0" },
     { name = "datasets", marker = "python_full_version < '3.14' and extra == 'full'", specifier = ">=2.14.6" },
     { name = "docker", marker = "extra == 'gskill'" },
-    { name = "gepa", extras = ["build"], marker = "extra == 'dev'" },
-    { name = "gepa", extras = ["full"], marker = "extra == 'gskill'" },
-    { name = "gepa", extras = ["full"], marker = "extra == 'test'" },
-    { name = "gepa", extras = ["test"], marker = "extra == 'dev'" },
+    { name = "async-gepa", extras = ["build"], marker = "extra == 'dev'" },
+    { name = "async-gepa", extras = ["full"], marker = "extra == 'gskill'" },
+    { name = "async-gepa", extras = ["full"], marker = "extra == 'test'" },
+    { name = "async-gepa", extras = ["test"], marker = "extra == 'dev'" },
     { name = "langchain", marker = "extra == 'langchain'", specifier = ">=1.0" },
     { name = "langchain-core", marker = "extra == 'langchain'", specifier = ">=1.0" },
     { name = "litellm", marker = "python_full_version >= '3.14' and extra == 'confidence'", specifier = ">=1.81.0,!=1.92.0,!=1.92.1,!=1.93.0,!=1.93.1,!=1.94.0,!=1.94.1,!=1.95.0" },

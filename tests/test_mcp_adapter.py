@@ -20,14 +20,14 @@ import pytest
 # Skip all tests if MCP not installed
 pytest.importorskip("mcp", reason="MCP SDK not installed")
 
-from gepa.adapters.mcp_adapter import MCPAdapter, MCPDataInst, MCPOutput, MCPTrajectory
-from gepa.adapters.mcp_adapter.mcp_client import (
+from async_gepa.adapters.mcp_adapter import MCPAdapter, MCPDataInst, MCPOutput, MCPTrajectory
+from async_gepa.adapters.mcp_adapter.mcp_client import (
     SSEMCPClient,
     StdioMCPClient,
     StreamableHTTPMCPClient,
     create_mcp_client,
 )
-from gepa.core.adapter import EvaluationBatch
+from async_gepa.core.adapter import EvaluationBatch
 
 # ============================================================================
 # Fixtures
@@ -568,7 +568,7 @@ def test_mcp_types_import():
 
 def test_mcp_adapter_import():
     """Test that MCPAdapter can be imported."""
-    from gepa.adapters.mcp_adapter import MCPAdapter
+    from async_gepa.adapters.mcp_adapter import MCPAdapter
 
     assert MCPAdapter is not None
 

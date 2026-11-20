@@ -10,17 +10,17 @@ from unittest.mock import MagicMock
 import pytest
 from conftest import create_mocked_lms_context
 
-from gepa.core.adapter import EvaluationBatch, default_batch_evaluate
-from gepa.core.state import GEPAState, ValsetEvaluation
-from gepa.proposer.base import CandidateProposal, SubsampleEvaluation
-from gepa.strategies.acceptance import StrictImprovementAcceptance
-from gepa.strategies.proposal_sampling import (
+from async_gepa.core.adapter import EvaluationBatch, default_batch_evaluate
+from async_gepa.core.state import GEPAState, ValsetEvaluation
+from async_gepa.proposer.base import CandidateProposal, SubsampleEvaluation
+from async_gepa.strategies.acceptance import StrictImprovementAcceptance
+from async_gepa.strategies.proposal_sampling import (
     IndependentSampling,
     PxNSampling,
     SameParentSampling,
     SingleMutationSampling,
 )
-from gepa.strategies.proposal_selection import (
+from async_gepa.strategies.proposal_selection import (
     AllImprovements,
     BestImprovement,
     TopKImprovements,
@@ -225,13 +225,13 @@ def aime_lms():
 
 
 def _run_recorded_optimization(aime_lms, sampling_strategy=None, selection_strategy=None):
-    import gepa
-    from gepa.adapters.default_adapter.default_adapter import DefaultAdapter
+    import async_gepa
+    from async_gepa.adapters.default_adapter.default_adapter import DefaultAdapter
 
     task_lm, reflection_lm = aime_lms
-    trainset, valset, _ = gepa.examples.aime.init_dataset()
+    trainset, valset, _ = async_gepa.examples.aime.init_dataset()
     log = _EventLog()
-    result = gepa.optimize(
+    result = async_gepa.optimize(
         seed_candidate={"system_prompt": _AIME_SEED_PROMPT},
         trainset=trainset[:10],
         valset=valset[:10],
@@ -372,7 +372,7 @@ def test_selection_dropped_rejection_reason_is_truthful():
     be reported as a score regression (engine reason poisoning fix)."""
     from unittest.mock import MagicMock
 
-    from gepa.core.engine import GEPAEngine
+    from async_gepa.core.engine import GEPAEngine
 
     proposal = CandidateProposal(
         candidate={"p": "x"},

@@ -1,6 +1,6 @@
 import random
 
-from gepa.gepa_utils import remove_dominated_programs
+from async_gepa.gepa_utils import remove_dominated_programs
 
 
 def reference_prune(fronts, scores):

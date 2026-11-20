@@ -3,7 +3,7 @@
 
 """Tests for the candidate tree visualization module."""
 
-from gepa.visualization import candidate_tree_dot_from_data, candidate_tree_html_from_data
+from async_gepa.visualization import candidate_tree_dot_from_data, candidate_tree_html_from_data
 
 
 def _sample_data():
@@ -109,7 +109,7 @@ class TestCandidateTreeHtml:
 class TestGEPAResultVisualization:
     def test_result_candidate_tree_dot(self):
         """Test that GEPAResult.candidate_tree_dot() works."""
-        from gepa.core.result import GEPAResult
+        from async_gepa.core.result import GEPAResult
 
         candidates, parents, val_scores, pareto_front = _sample_data()
         result = GEPAResult(
@@ -126,7 +126,7 @@ class TestGEPAResultVisualization:
 
     def test_result_candidate_tree_html(self):
         """Test that GEPAResult.candidate_tree_html() works."""
-        from gepa.core.result import GEPAResult
+        from async_gepa.core.result import GEPAResult
 
         candidates, parents, val_scores, pareto_front = _sample_data()
         result = GEPAResult(

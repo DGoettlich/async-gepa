@@ -5,8 +5,8 @@ import random
 
 import pytest
 
-from gepa.core.state import GEPAState, ValsetEvaluation
-from gepa.strategies.candidate_selector import (
+from async_gepa.core.state import GEPAState, ValsetEvaluation
+from async_gepa.strategies.candidate_selector import (
     CurrentBestCandidateSelector,
     EpsilonGreedyCandidateSelector,
     ParetoCandidateSelector,

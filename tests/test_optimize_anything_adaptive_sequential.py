@@ -7,16 +7,16 @@ from unittest.mock import patch
 
 import pytest
 
-from gepa.oa import BudgetTracker, EvalServer, OptimizeAnythingConfig, Task
-from gepa.oa.engines.autoresearch import _best_aggregate_candidate
-from gepa.oa.engines.gepa import GepaEngine
-from gepa.oa.ensemble import optimize_adaptive_sequential, optimize_adaptive_sequential_with_server
+from async_gepa.oa import BudgetTracker, EvalServer, OptimizeAnythingConfig, Task
+from async_gepa.oa.engines.autoresearch import _best_aggregate_candidate
+from async_gepa.oa.engines.gepa import GepaEngine
+from async_gepa.oa.ensemble import optimize_adaptive_sequential, optimize_adaptive_sequential_with_server
 
 
 @pytest.fixture(autouse=True)
 def _skip_claude_preflight(monkeypatch: pytest.MonkeyPatch) -> None:
     """These tests mock the claude subprocess; skip the CLI/bwrap preflight."""
-    monkeypatch.setattr("gepa.oa.engines.autoresearch.preflight_claude_engine", lambda *a, **k: None)
+    monkeypatch.setattr("async_gepa.oa.engines.autoresearch.preflight_claude_engine", lambda *a, **k: None)
 
 
 def _evaluate(candidate: str) -> tuple[float, dict]:
@@ -42,7 +42,7 @@ class OptimizeAnythingAdaptiveSequentialTests(unittest.TestCase):
                 return SimpleNamespace(best_candidate="gepa-best", best_score=0.8, metadata={})
             return SimpleNamespace(best_candidate="regressed", best_score=0.2, metadata={})
 
-        with patch("gepa.oa.ensemble.optimize_anything_with_server", side_effect=fake_optimize):
+        with patch("async_gepa.oa.ensemble.optimize_anything_with_server", side_effect=fake_optimize):
             result = optimize_adaptive_sequential_with_server(
                 server,
                 configs,
@@ -75,7 +75,7 @@ class OptimizeAnythingAdaptiveSequentialTests(unittest.TestCase):
             active_server.evaluate("next")
             return SimpleNamespace(best_candidate="next", best_score=0.1, metadata={})
 
-        with patch("gepa.oa.ensemble.optimize_anything_with_server", side_effect=fake_optimize):
+        with patch("async_gepa.oa.ensemble.optimize_anything_with_server", side_effect=fake_optimize):
             result = optimize_adaptive_sequential_with_server(
                 server,
                 configs,
@@ -106,7 +106,7 @@ class OptimizeAnythingAdaptiveSequentialTests(unittest.TestCase):
             active_server.evaluate("candidate-b")
             return SimpleNamespace(best_candidate="best", best_score=0.1, metadata={})
 
-        with patch("gepa.oa.ensemble.optimize_anything_with_server", side_effect=fake_optimize):
+        with patch("async_gepa.oa.ensemble.optimize_anything_with_server", side_effect=fake_optimize):
             result = optimize_adaptive_sequential_with_server(
                 server,
                 configs,
@@ -141,7 +141,7 @@ class OptimizeAnythingAdaptiveSequentialTests(unittest.TestCase):
 
         with (
             tempfile.TemporaryDirectory() as tmp,
-            patch("gepa.oa.ensemble.optimize_anything_with_server", side_effect=fake_optimize),
+            patch("async_gepa.oa.ensemble.optimize_anything_with_server", side_effect=fake_optimize),
         ):
             result = optimize_adaptive_sequential(
                 "seed",
@@ -180,7 +180,7 @@ class OptimizeAnythingAdaptiveSequentialTests(unittest.TestCase):
 
         with (
             tempfile.TemporaryDirectory() as tmp,
-            patch("gepa.oa.ensemble.optimize_anything_with_server", side_effect=fake_optimize),
+            patch("async_gepa.oa.ensemble.optimize_anything_with_server", side_effect=fake_optimize),
             self.assertWarns(UserWarning),
         ):
             optimize_adaptive_sequential(
@@ -206,7 +206,7 @@ class OptimizeAnythingAdaptiveSequentialTests(unittest.TestCase):
         self.assertEqual(_best_aggregate_candidate(server), ("aggregate-b", 0.7))
 
     def test_autoresearch_dataset_without_aggregate_score_returns_negative_infinity(self) -> None:
-        from gepa.oa.engines.autoresearch import AutoResearchEngine
+        from async_gepa.oa.engines.autoresearch import AutoResearchEngine
 
         engine = AutoResearchEngine(
             OptimizeAnythingConfig(engine="autoresearch", engine_config={"model": "sonnet", "ralph": False})
@@ -225,7 +225,7 @@ class OptimizeAnythingAdaptiveSequentialTests(unittest.TestCase):
         self.assertEqual(result.best_score, float("-inf"))
 
     def test_autoresearch_stops_ralph_when_eval_script_reports_budget_exhausted(self) -> None:
-        from gepa.oa.engines.autoresearch import AutoResearchEngine
+        from async_gepa.oa.engines.autoresearch import AutoResearchEngine
 
         engine = AutoResearchEngine(
             OptimizeAnythingConfig(engine="autoresearch", engine_config={"model": "sonnet", "ralph": True})
@@ -250,7 +250,7 @@ class OptimizeAnythingAdaptiveSequentialTests(unittest.TestCase):
     def test_autoresearch_kills_process_after_local_budget_exhaustion_grace(self) -> None:
         from pathlib import Path
 
-        from gepa.oa.engines.autoresearch import AutoResearchEngine
+        from async_gepa.oa.engines.autoresearch import AutoResearchEngine
 
         class FakeProcess:
             returncode = None
@@ -274,9 +274,9 @@ class OptimizeAnythingAdaptiveSequentialTests(unittest.TestCase):
         budget = BudgetTracker(max_evals=0)
 
         with (
-            patch("gepa.oa.engines.autoresearch.subprocess.Popen", return_value=proc),
-            patch("gepa.oa.engines.autoresearch.time.sleep", return_value=None),
-            patch("gepa.oa.engines.autoresearch._BUDGET_EXHAUSTION_GRACE_SECONDS", 0.0),
+            patch("async_gepa.oa.engines.autoresearch.subprocess.Popen", return_value=proc),
+            patch("async_gepa.oa.engines.autoresearch.time.sleep", return_value=None),
+            patch("async_gepa.oa.engines.autoresearch._BUDGET_EXHAUSTION_GRACE_SECONDS", 0.0),
         ):
             result = engine._run_claude(
                 work_dir=Path("."),
@@ -316,7 +316,7 @@ class OptimizeAnythingAdaptiveSequentialTests(unittest.TestCase):
             )
         )
 
-        with patch("gepa.gepa_launcher.optimize_anything", side_effect=fake_optimize):
+        with patch("async_gepa.gepa_launcher.optimize_anything", side_effect=fake_optimize):
             result = engine.run(server.task, server)
 
         # The cost source is treated as fresh: the cap is max_token_cost itself,

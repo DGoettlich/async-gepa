@@ -10,7 +10,7 @@ from examples.arc_agi.utils import (
     load_arc_dataset,
     run_agent,
 )
-from gepa.optimize_anything import (
+from async_gepa.optimize_anything import (
     EngineConfig,
     GEPAConfig,
     ReflectionConfig,

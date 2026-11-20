@@ -4,7 +4,7 @@
 
 import pytest
 
-from gepa.adapters.generic_rag_adapter.evaluation_metrics import RAGEvaluationMetrics
+from async_gepa.adapters.generic_rag_adapter.evaluation_metrics import RAGEvaluationMetrics
 
 
 class TestRAGEvaluationMetrics:

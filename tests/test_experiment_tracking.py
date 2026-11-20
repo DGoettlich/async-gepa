@@ -14,7 +14,7 @@ import pytest
 # message that surfaces this exact variable name.
 os.environ.setdefault("MLFLOW_ALLOW_FILE_STORE", "true")
 
-from gepa.logging.experiment_tracker import ExperimentTracker, create_experiment_tracker
+from async_gepa.logging.experiment_tracker import ExperimentTracker, create_experiment_tracker
 
 
 def has_wandb():

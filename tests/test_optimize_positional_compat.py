@@ -1,7 +1,7 @@
 # Copyright (c) 2025 Lakshya A Agrawal and the GEPA contributors
 # https://github.com/gepa-ai/gepa
 
-"""``gepa.optimize`` accepts positional arguments, so new parameters must not shift old ones.
+"""``async_gepa.optimize`` accepts positional arguments, so new parameters must not shift old ones.
 
 ``reflective_dataset_enricher`` was first inserted just before ``module_selector``. A
 caller passing ``"all"`` positionally for ``module_selector`` then handed the string to
@@ -11,8 +11,8 @@ ever calling reflection.
 
 import inspect
 
-import gepa
-from gepa.core.adapter import EvaluationBatch
+import async_gepa
+from async_gepa.core.adapter import EvaluationBatch
 
 # The positional order of gepa.optimize, up to module_selector, before the enricher existed.
 PRE_ENRICHER_ORDER = (
@@ -37,12 +37,12 @@ PRE_ENRICHER_ORDER = (
 
 
 def test_enricher_is_keyword_only():
-    parameter = inspect.signature(gepa.optimize).parameters["reflective_dataset_enricher"]
+    parameter = inspect.signature(async_gepa.optimize).parameters["reflective_dataset_enricher"]
     assert parameter.kind is inspect.Parameter.KEYWORD_ONLY
 
 
 def test_existing_positional_parameters_keep_their_positions():
-    names = tuple(inspect.signature(gepa.optimize).parameters)
+    names = tuple(inspect.signature(async_gepa.optimize).parameters)
     assert names[: len(PRE_ENRICHER_ORDER)] == PRE_ENRICHER_ORDER
 
 
@@ -76,9 +76,9 @@ def test_positional_module_selector_still_reaches_reflection():
         "reflection_minibatch_size": 2,
         "module_selector": "all",
     }
-    defaults = {name: p.default for name, p in inspect.signature(gepa.optimize).parameters.items()}
+    defaults = {name: p.default for name, p in inspect.signature(async_gepa.optimize).parameters.items()}
     positional = [values.get(name, defaults[name]) for name in PRE_ENRICHER_ORDER]
 
-    gepa.optimize(*positional, max_metric_calls=40, display_progress_bar=False)
+    async_gepa.optimize(*positional, max_metric_calls=40, display_progress_bar=False)
 
     assert reflection_calls, "a positional module_selector must not silence reflection"

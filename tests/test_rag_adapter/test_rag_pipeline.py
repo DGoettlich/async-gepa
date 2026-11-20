@@ -5,8 +5,8 @@ from typing import Any
 
 import pytest
 
-from gepa.adapters.generic_rag_adapter.rag_pipeline import RAGPipeline
-from gepa.adapters.generic_rag_adapter.vector_store_interface import VectorStoreInterface
+from async_gepa.adapters.generic_rag_adapter.rag_pipeline import RAGPipeline
+from async_gepa.adapters.generic_rag_adapter.vector_store_interface import VectorStoreInterface
 
 
 class MockVectorStore(VectorStoreInterface):

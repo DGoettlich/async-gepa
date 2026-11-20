@@ -6,12 +6,12 @@ on:
       - main
     paths:
       - "docs/**"
-      - "src/gepa/**"  # Rebuild docs when source changes (for API docs)
+      - "src/async_gepa/**"  # Rebuild docs when source changes (for API docs)
       - ".github/workflows/docs.yml"
   pull_request:
     paths:
       - "docs/**"
-      - "src/gepa/**"
+      - "src/async_gepa/**"
       - ".github/workflows/docs.yml"
   workflow_dispatch:  # Allow manual trigger
 

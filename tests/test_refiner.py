@@ -8,7 +8,7 @@ from pathlib import Path
 
 import pytest
 
-from gepa.gepa_launcher import (
+from async_gepa.gepa_launcher import (
     DEFAULT_REFINER_PROMPT,
     EngineConfig,
     GEPAConfig,
@@ -353,8 +353,8 @@ class TestRefiner:
         Tests the adapter directly to inspect the side_info structure produced
         by _evaluate_single_with_refinement.
         """
-        from gepa.adapters.optimize_anything_adapter.optimize_anything_adapter import OptimizeAnythingAdapter
-        from gepa.gepa_launcher import _SINGLE_INSTANCE_SENTINEL, EvaluatorWrapper
+        from async_gepa.adapters.optimize_anything_adapter.optimize_anything_adapter import OptimizeAnythingAdapter
+        from async_gepa.gepa_launcher import _SINGLE_INSTANCE_SENTINEL, EvaluatorWrapper
 
         call_counter = {"count": 0}
 
@@ -428,8 +428,8 @@ class TestRefiner:
         The number-guessing task is simple enough that even a small LLM should
         improve a deliberately bad seed (number=0, score=-42).
         """
-        from gepa.adapters.optimize_anything_adapter.optimize_anything_adapter import OptimizeAnythingAdapter
-        from gepa.gepa_launcher import _SINGLE_INSTANCE_SENTINEL, EvaluatorWrapper
+        from async_gepa.adapters.optimize_anything_adapter.optimize_anything_adapter import OptimizeAnythingAdapter
+        from async_gepa.gepa_launcher import _SINGLE_INSTANCE_SENTINEL, EvaluatorWrapper
 
         def raw_fitness_fn(candidate: dict[str, str], **kwargs) -> tuple[float, dict]:
             try:
@@ -498,8 +498,8 @@ class TestRefiner:
 
     def test_refiner_score_never_worse(self):
         """Test the max(original, refined) guarantee — refiner can only help, never hurt."""
-        from gepa.adapters.optimize_anything_adapter.optimize_anything_adapter import OptimizeAnythingAdapter
-        from gepa.gepa_launcher import _SINGLE_INSTANCE_SENTINEL, EvaluatorWrapper
+        from async_gepa.adapters.optimize_anything_adapter.optimize_anything_adapter import OptimizeAnythingAdapter
+        from async_gepa.gepa_launcher import _SINGLE_INSTANCE_SENTINEL, EvaluatorWrapper
 
         def raw_fitness_fn(candidate: dict[str, str], **kwargs) -> tuple[float, dict]:
             try:
@@ -549,8 +549,8 @@ class TestRefiner:
         This prevents losing objective frontier metrics when the original score is negative
         and failed attempts have placeholder score=0.0.
         """
-        from gepa.adapters.optimize_anything_adapter.optimize_anything_adapter import OptimizeAnythingAdapter
-        from gepa.gepa_launcher import _SINGLE_INSTANCE_SENTINEL, EvaluatorWrapper
+        from async_gepa.adapters.optimize_anything_adapter.optimize_anything_adapter import OptimizeAnythingAdapter
+        from async_gepa.gepa_launcher import _SINGLE_INSTANCE_SENTINEL, EvaluatorWrapper
 
         def raw_fitness_fn(candidate: dict[str, str], **kwargs) -> tuple[float, dict]:
             try:
@@ -709,7 +709,7 @@ class TestRefinerFrontierTypes:
     @pytest.mark.parametrize("frontier_type", ["instance", "objective", "hybrid", "cartesian"])
     def test_refiner_side_info_structure_with_dataset(self, frontier_type):
         """Verify side_info structure is correct per frontier type — uses adapter directly."""
-        from gepa.adapters.optimize_anything_adapter.optimize_anything_adapter import OptimizeAnythingAdapter
+        from async_gepa.adapters.optimize_anything_adapter.optimize_anything_adapter import OptimizeAnythingAdapter
 
         call_counter = {"count": 0}
 

@@ -20,13 +20,13 @@ from dspy.teleprompt.bootstrap_trace import FailedPrediction
 from dspy.teleprompt.gepa.gepa_utils import DspyAdapter
 from dspy.utils.dummies import DummyLM
 
-from gepa import EvaluationBatch, GEPAAdapter, GEPAResult, optimize
-from gepa.core.adapter import ProposalFn
-from gepa.proposer.reflective_mutation.base import ReflectionComponentSelector
-from gepa.strategies.acceptance import ImprovementOrEqualAcceptance
-from gepa.strategies.instruction_proposal import InstructionProposalSignature
-from gepa.strategies.proposal_sampling import SameParentSampling
-from gepa.strategies.proposal_selection import AllImprovements
+from async_gepa import EvaluationBatch, GEPAAdapter, GEPAResult, optimize
+from async_gepa.core.adapter import ProposalFn
+from async_gepa.proposer.reflective_mutation.base import ReflectionComponentSelector
+from async_gepa.strategies.acceptance import ImprovementOrEqualAcceptance
+from async_gepa.strategies.instruction_proposal import InstructionProposalSignature
+from async_gepa.strategies.proposal_sampling import SameParentSampling
+from async_gepa.strategies.proposal_selection import AllImprovements
 
 
 class TwoStageProgram(dspy.Module):

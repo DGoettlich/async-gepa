@@ -60,9 +60,9 @@ def main() -> int:
 
     # 1) import + the correct API surface
     try:
-        import gepa  # noqa
-        from gepa.optimize_anything import OptimizeAnythingConfig, optimize_anything  # noqa
-        check(f"import gepa ({getattr(gepa, '__version__', '?')}) + optimize_anything", True)
+        import async_gepa  # noqa
+        from async_gepa.optimize_anything import OptimizeAnythingConfig, optimize_anything  # noqa
+        check(f"import gepa ({getattr(async_gepa, '__version__', '?')}) + optimize_anything", True)
     except Exception as e:  # noqa
         check("import gepa + optimize_anything", False, "pip install 'gepa[full]'")
         print(f"      {e}")
@@ -96,7 +96,7 @@ def main() -> int:
     if a.test_lm and a.engine in ("gepa", "best_of_n"):
         target = lm or DEFAULT_LM_BY_ENGINE[a.engine]
         try:
-            from gepa.lm import LM
+            from async_gepa.lm import LM
             out = LM(target)("Reply with the single word: ok")
             check(f"LM 1-call round-trip ({target})", bool(out),
                   "LM returned empty; check model id / creds / region")

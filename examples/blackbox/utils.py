@@ -4,7 +4,7 @@ import numpy as np
 import json
 from pathlib import Path
 
-from gepa.utils.code_execution import execute_code as _execute_code, ExecutionMode
+from async_gepa.utils.code_execution import execute_code as _execute_code, ExecutionMode
 from examples.blackbox.evalset.problems import problems
 
 

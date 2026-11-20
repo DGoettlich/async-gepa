@@ -10,7 +10,7 @@ Tests cover:
 - ``LangChainAdapter.evaluate`` happy-path, trace capture, and
   rollout-error handling
 - ``LangChainAdapter.make_reflective_dataset`` record building
-- An end-to-end smoke test running ``gepa.optimize`` with a fake LLM
+- An end-to-end smoke test running ``async_gepa.optimize`` with a fake LLM
 
 All tests use ``FakeListChatModel`` so no network calls occur.
 """
@@ -24,8 +24,8 @@ pytest.importorskip("langchain_core", reason="requires gepa[langchain] extra")
 from langchain_core.language_models.fake_chat_models import FakeListChatModel
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 
-from gepa import optimize
-from gepa.adapters.langchain_adapter import (
+from async_gepa import optimize
+from async_gepa.adapters.langchain_adapter import (
     LangChainAdapter,
     last_message_text,
     make_reflection_lm,
@@ -250,7 +250,7 @@ class TestMakeReflectiveDataset:
             num_threads=1,
             show_progress=False,
         )
-        from gepa.core.adapter import EvaluationBatch
+        from async_gepa.core.adapter import EvaluationBatch
 
         empty = EvaluationBatch(outputs=[], scores=[], trajectories=[])
         with pytest.raises(RuntimeError, match="No trajectories captured"):

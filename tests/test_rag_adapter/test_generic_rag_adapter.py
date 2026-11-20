@@ -6,9 +6,9 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from gepa.adapters.generic_rag_adapter.generic_rag_adapter import GenericRAGAdapter, RAGDataInst
-from gepa.adapters.generic_rag_adapter.vector_store_interface import VectorStoreInterface
-from gepa.core.adapter import EvaluationBatch
+from async_gepa.adapters.generic_rag_adapter.generic_rag_adapter import GenericRAGAdapter, RAGDataInst
+from async_gepa.adapters.generic_rag_adapter.vector_store_interface import VectorStoreInterface
+from async_gepa.core.adapter import EvaluationBatch
 
 
 class MockVectorStore(VectorStoreInterface):

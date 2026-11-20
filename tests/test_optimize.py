@@ -3,7 +3,7 @@ from unittest.mock import Mock
 
 import pytest
 
-from gepa import optimize
+from async_gepa import optimize
 
 
 def test_reflection_prompt_template():

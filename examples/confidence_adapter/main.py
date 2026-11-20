@@ -110,7 +110,7 @@ def make_response_format(categories):
 
 def make_evaluator():
     """Binary evaluator for DefaultAdapter: correct = 1.0, wrong = 0.0."""
-    from gepa.adapters.default_adapter.default_adapter import EvaluationResult
+    from async_gepa.adapters.default_adapter.default_adapter import EvaluationResult
 
     def evaluator(data, response_text):
         try:
@@ -368,9 +368,9 @@ def evaluate_on_test(prompt, test_data, categories, dataset_name, condition):
 
 # %% Run GEPA optimization
 
-import gepa
-from gepa.adapters.confidence_adapter import ConfidenceAdapter
-from gepa.adapters.default_adapter.default_adapter import DefaultAdapter
+import async_gepa
+from async_gepa.adapters.confidence_adapter import ConfidenceAdapter
+from async_gepa.adapters.default_adapter.default_adapter import DefaultAdapter
 
 
 def run_optimization(adapter, trainset, valset, dataset_name, adapter_name, categories):
@@ -384,7 +384,7 @@ def run_optimization(adapter, trainset, valset, dataset_name, adapter_name, cate
         f"(train={len(trainset)}, val={len(valset)}, minibatch={minibatch})..."
     )
 
-    result = gepa.optimize(
+    result = async_gepa.optimize(
         seed_candidate={"system_prompt": SEED_PROMPT},
         trainset=trainset,
         valset=valset,

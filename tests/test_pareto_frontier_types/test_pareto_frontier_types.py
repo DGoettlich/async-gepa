@@ -47,8 +47,8 @@ def test_pareto_frontier_type(mocked_lms, recorder_dir, frontier_type):
     """
     End-to-end test of GEPA optimization on the PUPA dataset with different frontier tracking modes.
     """
-    import gepa
-    from gepa.adapters.default_adapter.default_adapter import (
+    import async_gepa
+    from async_gepa.adapters.default_adapter.default_adapter import (
         DefaultAdapter,
         DefaultDataInst,
         EvaluationResult,
@@ -97,7 +97,7 @@ def test_pareto_frontier_type(mocked_lms, recorder_dir, frontier_type):
 
     seed_prompt = {"system_prompt": "You are a helpful assistant."}
 
-    gepa_result = gepa.optimize(
+    gepa_result = async_gepa.optimize(
         seed_candidate=seed_prompt,
         trainset=trainset,
         valset=valset,

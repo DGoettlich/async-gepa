@@ -9,8 +9,8 @@ New parameters and fields go after the existing ones and are keyword-only.
 import dataclasses
 import inspect
 
-import gepa
-from gepa.gepa_launcher import EngineConfig
+import async_gepa
+from async_gepa.gepa_launcher import EngineConfig
 
 V014_OPTIMIZE_POSITIONAL = [
     "seed_candidate", "trainset", "valset", "adapter", "task_lm", "evaluator", "reflection_lm",
@@ -37,7 +37,7 @@ V014_ENGINE_CONFIG_POSITIONAL = [
 def test_optimize_keeps_the_v014_positional_order():
     positional = [
         p.name
-        for p in inspect.signature(gepa.optimize).parameters.values()
+        for p in inspect.signature(async_gepa.optimize).parameters.values()
         if p.kind in (inspect.Parameter.POSITIONAL_ONLY, inspect.Parameter.POSITIONAL_OR_KEYWORD)
     ]
     assert positional == V014_OPTIMIZE_POSITIONAL

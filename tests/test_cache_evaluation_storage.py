@@ -8,7 +8,7 @@ from pathlib import Path
 
 import pytest
 
-from gepa.gepa_launcher import (
+from async_gepa.gepa_launcher import (
     GEPAConfig,
     EngineConfig,
     ReflectionConfig,

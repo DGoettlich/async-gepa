@@ -20,8 +20,8 @@ from langchain.chat_models import init_chat_model
 from langchain_core.language_models import BaseChatModel
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 
-from gepa import optimize
-from gepa.adapters.langchain_adapter import (
+from async_gepa import optimize
+from async_gepa.adapters.langchain_adapter import (
     LangChainAdapter,
     last_message_text,
     make_reflection_lm,

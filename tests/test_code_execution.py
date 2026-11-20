@@ -1,13 +1,13 @@
 # Copyright (c) 2025 Lakshya A Agrawal and the GEPA contributors
 # https://github.com/gepa-ai/gepa
 
-"""Tests for the subprocess timeout path of ``gepa.utils.code_execution``."""
+"""Tests for the subprocess timeout path of ``async_gepa.utils.code_execution``."""
 
 import time
 
 import pytest
 
-from gepa.utils.code_execution import ExecutionMode, execute_code
+from async_gepa.utils.code_execution import ExecutionMode, execute_code
 
 
 def test_subprocess_timeout_is_reported_as_failure():

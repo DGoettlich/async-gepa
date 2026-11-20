@@ -23,12 +23,12 @@ from dspy.primitives import Example
 from dspy.teleprompt.bootstrap_trace import FailedPrediction
 from dspy.utils.dummies import DummyLM
 
-from gepa.adapters.dspy_full_program_adapter.full_program_adapter import (
+from async_gepa.adapters.dspy_full_program_adapter.full_program_adapter import (
     DspyAdapter,
     _select_trace_instances_for_reflection,
 )
-from gepa.core.adapter import EvaluationBatch
-from gepa.proposer.reflective_mutation.base import LanguageModel
+from async_gepa.core.adapter import EvaluationBatch
+from async_gepa.proposer.reflective_mutation.base import LanguageModel
 
 # ---------------------------------------------------------------------------
 # Helpers

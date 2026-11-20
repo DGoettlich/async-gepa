@@ -3,7 +3,7 @@ import os
 import dspy
 
 from examples.aime_math.utils import evaluate_on_dataset, load_math_dataset, math_metric, run_llm
-from gepa.optimize_anything import (
+from async_gepa.optimize_anything import (
     EngineConfig,
     GEPAConfig,
     ReflectionConfig,

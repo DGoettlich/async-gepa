@@ -11,16 +11,16 @@ from unittest.mock import patch
 
 import pytest
 
-from gepa.oa.budget import BudgetTracker
-from gepa.oa.config import OptimizeAnythingConfig
-from gepa.oa.engines.autoresearch import AutoResearchEngine, _RunningClaudeProcess, _terminate_claude_process
-from gepa.oa.task import Task
+from async_gepa.oa.budget import BudgetTracker
+from async_gepa.oa.config import OptimizeAnythingConfig
+from async_gepa.oa.engines.autoresearch import AutoResearchEngine, _RunningClaudeProcess, _terminate_claude_process
+from async_gepa.oa.task import Task
 
 
 @pytest.fixture(autouse=True)
 def _skip_claude_preflight(monkeypatch: pytest.MonkeyPatch) -> None:
     """These tests mock the claude subprocess; skip the CLI/bwrap preflight."""
-    monkeypatch.setattr("gepa.oa.engines.autoresearch.preflight_claude_engine", lambda *a, **k: None)
+    monkeypatch.setattr("async_gepa.oa.engines.autoresearch.preflight_claude_engine", lambda *a, **k: None)
 
 
 class _FakeServer:
@@ -92,7 +92,7 @@ def _run_once(engine: AutoResearchEngine, work_dir: Path, budget: BudgetTracker)
 
 def _fast_sleep(monkeypatch: pytest.MonkeyPatch) -> Callable[[float], None]:
     real_sleep = time.sleep
-    monkeypatch.setattr("gepa.oa.engines.autoresearch.time.sleep", lambda _: real_sleep(0.01))
+    monkeypatch.setattr("async_gepa.oa.engines.autoresearch.time.sleep", lambda _: real_sleep(0.01))
     return real_sleep
 
 
@@ -116,7 +116,7 @@ def test_autoresearch_drains_large_stdout_and_stderr_while_running(
 
     _fast_sleep(monkeypatch)
     engine = _engine_with_no_eval_watchdog(1.0)
-    with patch("gepa.oa.engines.autoresearch.subprocess.Popen", side_effect=launch_child):
+    with patch("async_gepa.oa.engines.autoresearch.subprocess.Popen", side_effect=launch_child):
         completed = _run_once(engine, tmp_path, BudgetTracker(max_evals=1))
 
     assert completed.returncode == 0, (len(completed.stdout), len(completed.stderr))
@@ -161,7 +161,7 @@ def test_autoresearch_watchdog_terminates_posix_process_group(tmp_path: Path, mo
     engine = _engine_with_no_eval_watchdog(0.1)
     try:
         started = time.monotonic()
-        with patch("gepa.oa.engines.autoresearch.subprocess.Popen", side_effect=launch_child):
+        with patch("async_gepa.oa.engines.autoresearch.subprocess.Popen", side_effect=launch_child):
             completed = _run_once(engine, tmp_path, BudgetTracker(max_evals=1))
         elapsed = time.monotonic() - started
         assert grandchild_pid_file.exists()
@@ -180,7 +180,7 @@ def test_autoresearch_watchdog_terminates_posix_process_group(tmp_path: Path, mo
 def test_autoresearch_no_eval_watchdog_preserves_reason_string(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     engine = _engine_with_no_eval_watchdog(0.0)
     _fast_sleep(monkeypatch)
-    with patch("gepa.oa.engines.autoresearch.subprocess.Popen", return_value=_HangingFakePopen()):
+    with patch("async_gepa.oa.engines.autoresearch.subprocess.Popen", return_value=_HangingFakePopen()):
         completed = _run_once(engine, tmp_path, BudgetTracker(max_evals=1))
 
     assert "NO_EVAL_PROGRESS" in completed.stderr
@@ -191,8 +191,8 @@ def test_autoresearch_budget_watchdog_preserves_reason_string(tmp_path: Path, mo
     budget.record(0.0)
     engine = _engine_with_no_eval_watchdog(60.0)
     _fast_sleep(monkeypatch)
-    monkeypatch.setattr("gepa.oa.engines.autoresearch._BUDGET_EXHAUSTION_GRACE_SECONDS", 0.0)
-    with patch("gepa.oa.engines.autoresearch.subprocess.Popen", return_value=_HangingFakePopen()):
+    monkeypatch.setattr("async_gepa.oa.engines.autoresearch._BUDGET_EXHAUSTION_GRACE_SECONDS", 0.0)
+    with patch("async_gepa.oa.engines.autoresearch.subprocess.Popen", return_value=_HangingFakePopen()):
         completed = _run_once(engine, tmp_path, budget)
 
     assert "BUDGET_EXHAUSTED" in completed.stderr
@@ -217,8 +217,8 @@ def test_autoresearch_kills_unresponsive_process_without_sigkill_on_windows(monk
             self.kill_calls += 1
 
     fake = _UnresponsiveFakePopen()
-    monkeypatch.setattr("gepa.oa.engines.autoresearch.os.name", "nt")
-    monkeypatch.delattr("gepa.oa.engines.autoresearch.signal.SIGKILL", raising=False)
+    monkeypatch.setattr("async_gepa.oa.engines.autoresearch.os.name", "nt")
+    monkeypatch.delattr("async_gepa.oa.engines.autoresearch.signal.SIGKILL", raising=False)
 
     _terminate_claude_process(_RunningClaudeProcess(fake, StringIO(), StringIO()))
 
@@ -236,8 +236,8 @@ def test_autoresearch_uses_direct_process_fallback_on_windows(tmp_path: Path, mo
         return fake
 
     _fast_sleep(monkeypatch)
-    monkeypatch.setattr("gepa.oa.engines.autoresearch.os.name", "nt")
-    with patch("gepa.oa.engines.autoresearch.subprocess.Popen", side_effect=capture_popen):
+    monkeypatch.setattr("async_gepa.oa.engines.autoresearch.os.name", "nt")
+    with patch("async_gepa.oa.engines.autoresearch.subprocess.Popen", side_effect=capture_popen):
         _run_once(engine, tmp_path, BudgetTracker(max_evals=1))
 
     assert "start_new_session" not in captured_kwargs
@@ -260,7 +260,7 @@ def test_autoresearch_engine_ralph_resumes_with_remaining_budget(tmp_path: Path)
         )
     )
 
-    with patch("gepa.oa.engines.autoresearch.subprocess.Popen", side_effect=fake_popen):
+    with patch("async_gepa.oa.engines.autoresearch.subprocess.Popen", side_effect=fake_popen):
         result = engine.run(task, server)
 
     assert len(calls) == 2
@@ -289,7 +289,7 @@ def test_autoresearch_engine_can_disable_ralph(tmp_path: Path) -> None:
         )
     )
 
-    with patch("gepa.oa.engines.autoresearch.subprocess.Popen", side_effect=fake_popen):
+    with patch("async_gepa.oa.engines.autoresearch.subprocess.Popen", side_effect=fake_popen):
         result = engine.run(task, server)
 
     assert len(calls) == 1
@@ -313,7 +313,7 @@ def test_autoresearch_engine_string_false_disables_ralph(tmp_path: Path) -> None
         )
     )
 
-    with patch("gepa.oa.engines.autoresearch.subprocess.Popen", side_effect=fake_popen):
+    with patch("async_gepa.oa.engines.autoresearch.subprocess.Popen", side_effect=fake_popen):
         result = engine.run(task, server)
 
     assert len(calls) == 1
@@ -337,7 +337,7 @@ def test_autoresearch_engine_ralph_respects_stop_at_score(tmp_path: Path) -> Non
         )
     )
 
-    with patch("gepa.oa.engines.autoresearch.subprocess.Popen", side_effect=fake_popen):
+    with patch("async_gepa.oa.engines.autoresearch.subprocess.Popen", side_effect=fake_popen):
         result = engine.run(task, server)
 
     assert len(calls) == 1
@@ -361,7 +361,7 @@ def test_autoresearch_engine_counts_failed_resume_cost(tmp_path: Path) -> None:
         OptimizeAnythingConfig(engine="autoresearch", sandbox=False, run_dir=str(tmp_path), engine_config={})
     )
 
-    with patch("gepa.oa.engines.autoresearch.subprocess.Popen", side_effect=fake_popen):
+    with patch("async_gepa.oa.engines.autoresearch.subprocess.Popen", side_effect=fake_popen):
         result = engine.run(task, server)
 
     assert len(calls) == 2
@@ -411,7 +411,7 @@ def test_autoresearch_engine_materializes_optimize_anything_handoff(tmp_path: Pa
         )
     )
 
-    with patch("gepa.oa.engines.autoresearch.subprocess.Popen", side_effect=fake_popen):
+    with patch("async_gepa.oa.engines.autoresearch.subprocess.Popen", side_effect=fake_popen):
         result = engine.run(task, server)
 
     assert result.best_candidate == "candidate"
@@ -424,7 +424,7 @@ def test_autoresearch_scripts_point_at_a_lazily_bound_live_server(tmp_path: Path
     import re
     import urllib.request
 
-    from gepa.oa.eval_server import EvalServer
+    from async_gepa.oa.eval_server import EvalServer
 
     task = Task(name="smoke", seed_candidate="seed", train_set=["a", "b"])
     server = EvalServer(
@@ -455,7 +455,7 @@ def test_autoresearch_scripts_point_at_a_lazily_bound_live_server(tmp_path: Path
     )
 
     try:
-        with patch("gepa.oa.engines.autoresearch.subprocess.Popen", side_effect=fake_popen):
+        with patch("async_gepa.oa.engines.autoresearch.subprocess.Popen", side_effect=fake_popen):
             result = engine.run(task, server)
         assert script_urls == [server.url]
     finally:
