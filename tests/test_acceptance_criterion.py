@@ -3,9 +3,9 @@
 
 import pytest
 
-from gepa.core.state import GEPAState, ValsetEvaluation
-from gepa.proposer.base import CandidateProposal, SubsampleEvaluation
-from gepa.strategies.acceptance import (
+from async_gepa.core.state import GEPAState, ValsetEvaluation
+from async_gepa.proposer.base import CandidateProposal, SubsampleEvaluation
+from async_gepa.strategies.acceptance import (
     AcceptanceCriterion,
     ImprovementOrEqualAcceptance,
     StrictImprovementAcceptance,

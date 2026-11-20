@@ -3,7 +3,7 @@
 
 from unittest.mock import MagicMock, patch
 
-from gepa.logging.experiment_tracker import ExperimentTracker
+from async_gepa.logging.experiment_tracker import ExperimentTracker
 
 
 class TestLogTable:

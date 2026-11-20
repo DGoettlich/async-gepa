@@ -15,9 +15,9 @@ import json
 
 import pytest
 
-import gepa
-from gepa.core.engine import GEPAEngine
-from gepa.core.state import (
+import async_gepa
+from async_gepa.core.engine import GEPAEngine
+from async_gepa.core.state import (
     TRAINSET_CACHE_SPLIT,
     VALSET_CACHE_SPLIT,
     CachedEvaluation,
@@ -26,7 +26,7 @@ from gepa.core.state import (
     ValsetEvaluation,
     _candidate_hash,
 )
-from gepa.gepa_launcher import EngineConfig, GEPAConfig, MergeConfig, ReflectionConfig, optimize_anything
+from async_gepa.gepa_launcher import EngineConfig, GEPAConfig, MergeConfig, ReflectionConfig, optimize_anything
 
 TRAIN = [{"content": f"train-{n}"} for n in range(12)]
 VAL = [{"content": f"val-{n}"} for n in range(6)]
@@ -210,7 +210,7 @@ class _StubAdapter:
 
 
 def _splits_used_by_optimize(monkeypatch, valset):
-    """Return (engine split, merge split) that ``gepa.optimize`` wires up."""
+    """Return (engine split, merge split) that ``async_gepa.optimize`` wires up."""
     captured = {}
 
     def fake_run(self):
@@ -220,7 +220,7 @@ def _splits_used_by_optimize(monkeypatch, valset):
 
     monkeypatch.setattr(GEPAEngine, "run", fake_run)
     with contextlib.suppress(_Intercepted):
-        gepa.optimize(
+        async_gepa.optimize(
             seed_candidate={"p": "seed"},
             trainset=TRAIN,
             valset=valset,

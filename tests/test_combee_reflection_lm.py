@@ -18,13 +18,13 @@ from typing import ClassVar
 
 import pytest
 
-import gepa
-from gepa.core.adapter import EvaluationBatch
-from gepa.proposer.reflective_mutation.combee import (
+import async_gepa
+from async_gepa.core.adapter import EvaluationBatch
+from async_gepa.proposer.reflective_mutation.combee import (
     DEFAULT_AGGREGATION_PROMPT_TEMPLATE,
     ComBEEReflectionLM,
 )
-from gepa.proposer.reflective_mutation.reflection_lm import ReflectionLM
+from async_gepa.proposer.reflective_mutation.reflection_lm import ReflectionLM
 
 RECORDS9 = [{"Inputs": f"q{i}", "Generated Outputs": f"a{i}", "Feedback": f"fb{i}"} for i in range(9)]
 RECORDS3 = RECORDS9[:3]
@@ -208,14 +208,14 @@ def test_plain_callable_tracks_tokens_but_not_provider_cost():
     assert combee.total_tokens_in > 0
     assert combee.total_tokens_out > 0
 
-    from gepa.lm import TrackingLM
+    from async_gepa.lm import TrackingLM
 
     assert not ComBEEReflectionLM(TrackingLM(lambda prompt: "update")).supports_cost_tracking()
 
 
 def test_str_model_name_resolved_via_gepa_lm():
-    """A model-name string constructs a gepa.lm.LM with cost tracking wired."""
-    from gepa.lm import LM
+    """A model-name string constructs a async_gepa.lm.LM with cost tracking wired."""
+    from async_gepa.lm import LM
 
     combee = ComBEEReflectionLM("openai/gpt-4.1-mini")
     assert isinstance(combee.lm, LM)
@@ -224,10 +224,10 @@ def test_str_model_name_resolved_via_gepa_lm():
 
 
 def test_model_name_binds_public_lm_kwargs_unless_constructor_overrides(monkeypatch):
-    import gepa.lm
+    import async_gepa.lm
 
     _KwargRecordingLM.instances.clear()
-    monkeypatch.setattr(gepa.lm, "LM", _KwargRecordingLM)
+    monkeypatch.setattr(async_gepa.lm, "LM", _KwargRecordingLM)
 
     combee = ComBEEReflectionLM("test/model")
     assert combee.lm.kwargs == {}
@@ -367,7 +367,7 @@ def test_e2e_gepa_optimize_with_combee(tmp_path):
         def on_proposal_end(self, event):
             log["proposal_end"].append(dict(event))
 
-    result = gepa.optimize(
+    result = async_gepa.optimize(
         seed_candidate={"system_prompt": "LEVEL=0"},
         trainset=TRAIN,
         valset=TRAIN,
@@ -400,7 +400,7 @@ def test_e2e_gepa_optimize_with_combee(tmp_path):
 
 
 def test_e2e_optimize_anything_with_combee(tmp_path):
-    from gepa.optimize_anything import EngineConfig, GEPAConfig, ReflectionConfig, optimize_anything
+    from async_gepa.optimize_anything import EngineConfig, GEPAConfig, ReflectionConfig, optimize_anything
 
     lm = ImprovingLM()
     combee = ComBEEReflectionLM(lm, rng=random.Random(0))
@@ -432,7 +432,7 @@ def test_e2e_combee_with_pxn_sampling(tmp_path):
     """ComBEE x PxNSampling: multi-task iterations route through ComBEE's
     two-wave ``reflect_many`` implementation, so every attempted proposal
     costs exactly k+1 reflection calls and carries independent diagnostics."""
-    from gepa.strategies.proposal_sampling import PxNSampling
+    from async_gepa.strategies.proposal_sampling import PxNSampling
 
     def run(seed, tag):
         lm = ImprovingLM()
@@ -447,7 +447,7 @@ def test_e2e_combee_with_pxn_sampling(tmp_path):
             def on_budget_updated(self, event):
                 events["budget"].append(dict(event))
 
-        result = gepa.optimize(
+        result = async_gepa.optimize(
             seed_candidate={"system_prompt": "LEVEL=0"},
             trainset=TRAIN,
             valset=TRAIN,
@@ -534,7 +534,7 @@ class BatchScriptedLM(ScriptedLM):
 def test_reflect_many_batches_in_two_waves():
     """All map/fallback calls across all jobs go out as ONE batched round,
     all reduce calls as a second — with per-job results and metadata intact."""
-    from gepa.proposer.reflective_mutation.reflection_lm import BatchReflectionLM
+    from async_gepa.proposer.reflective_mutation.reflection_lm import BatchReflectionLM
 
     lm = BatchScriptedLM(["j0m0", "j0m1", "j0m2", "j1naive", "j0final"])
     combee = ComBEEReflectionLM(lm, rng=random.Random(0))
@@ -650,7 +650,7 @@ def test_e2e_pxn_with_batch_capable_lm(tmp_path):
     """ComBEE x PxN with a batch-capable LM: each iteration's reflection goes
     out as two waves (wave1 = 3 maps per job, wave2 = 1 reduce per job), and
     the per-proposal cost contract is unchanged."""
-    from gepa.strategies.proposal_sampling import PxNSampling
+    from async_gepa.strategies.proposal_sampling import PxNSampling
 
     class BatchImprovingLM(ImprovingLM):
         def __init__(self):
@@ -668,7 +668,7 @@ def test_e2e_pxn_with_batch_capable_lm(tmp_path):
         def on_proposal_end(self, event):
             events["proposal_end"].append(dict(event))
 
-    result = gepa.optimize(
+    result = async_gepa.optimize(
         seed_candidate={"system_prompt": "LEVEL=0"},
         trainset=TRAIN,
         valset=TRAIN,
@@ -722,7 +722,7 @@ def test_pxn_1x1_equivalent_to_single_mutation_sampling(tmp_path):
     """PxNSampling(1,1) consumes the candidate selector and batch sampler in
     the same order as SingleMutationSampling, so a ComBEE run under either
     produces identical results, prompts, and event streams."""
-    from gepa.strategies.proposal_sampling import PxNSampling, SingleMutationSampling
+    from async_gepa.strategies.proposal_sampling import PxNSampling, SingleMutationSampling
 
     def run(sampling, tag):
         lm = ContentKeyedLM()
@@ -738,7 +738,7 @@ def test_pxn_1x1_equivalent_to_single_mutation_sampling(tmp_path):
                     return rec
                 raise AttributeError(name)
 
-        result = gepa.optimize(
+        result = async_gepa.optimize(
             seed_candidate={"system_prompt": "LEVEL=0 SEED"},
             trainset=TRAIN,
             valset=TRAIN,
@@ -782,14 +782,14 @@ def test_empty_aggregation_template_is_rejected_not_defaulted():
 
 
 def test_bind_rng_makes_default_shuffles_seed_sensitive(tmp_path):
-    """With the default RNG, ``gepa.optimize(seed=...)`` binds ComBEE to the
+    """With the default RNG, ``async_gepa.optimize(seed=...)`` binds ComBEE to the
     engine stream: changing the seed changes shuffles, while a fixed seed
     reproduces them."""
 
     def run(seed, tag):
         lm = ScriptedLM(["improved"] * 40)
         combee = ComBEEReflectionLM(lm)  # default rng -> bind_rng applies
-        gepa.optimize(
+        async_gepa.optimize(
             seed_candidate={"system_prompt": "LEVEL=0 SEED"},
             trainset=TRAIN,
             valset=TRAIN,
@@ -859,7 +859,7 @@ def test_failed_batch_restores_rng_state_for_failure_transparency():
 def test_optimize_anything_cost_cap_stops_on_strategy_cost(tmp_path):
     """Regression (review P1): oa validated strategy.total_cost but wired the
     stopper to reflection_lm — the cap never fired on strategy cost."""
-    from gepa.optimize_anything import EngineConfig, GEPAConfig, ReflectionConfig, optimize_anything
+    from async_gepa.optimize_anything import EngineConfig, GEPAConfig, ReflectionConfig, optimize_anything
 
     class CostlyStrategy:
         def __init__(self):
@@ -869,7 +869,7 @@ def test_optimize_anything_cost_cap_stops_on_strategy_cost(tmp_path):
         def reflect(self, candidate, reflective_dataset, components_to_update):
             self.calls += 1
             self.total_cost += 1.0
-            from gepa.proposer.reflective_mutation.reflection_lm import ReflectionProposal
+            from async_gepa.proposer.reflective_mutation.reflection_lm import ReflectionProposal
 
             return ReflectionProposal(new_texts={c: f"v{self.calls}_{c}" for c in components_to_update}), self
 
@@ -917,7 +917,7 @@ def test_strategy_binding_preserves_legacy_shared_engine_stream(tmp_path):
             kwargs["reflection_strategy"] = reflection_strategy
         else:
             kwargs["reflection_lm"] = lambda p: "```\nLEVEL=1\n```"
-        gepa.optimize(
+        async_gepa.optimize(
             seed_candidate={"system_prompt": "LEVEL=0"},
             trainset=TRAIN,
             valset=TRAIN,
@@ -1017,7 +1017,7 @@ def test_optimize_binds_configured_logger_to_combee(tmp_path):
     combee = ComBEEReflectionLM(lm, rng=random.Random(0))
     template = "PUBLIC OPTIMIZE TEMPLATE <curr_param> :: <side_info>"
 
-    gepa.optimize(
+    async_gepa.optimize(
         seed_candidate={"system_prompt": "LEVEL=0"},
         trainset=TRAIN,
         valset=TRAIN,
@@ -1039,7 +1039,7 @@ def test_optimize_binds_configured_logger_to_combee(tmp_path):
 
 
 def test_optimize_anything_binds_configured_logger_to_combee(tmp_path):
-    from gepa.optimize_anything import (
+    from async_gepa.optimize_anything import (
         EngineConfig,
         GEPAConfig,
         ReflectionConfig,
@@ -1068,13 +1068,13 @@ def test_optimize_anything_binds_configured_logger_to_combee(tmp_path):
 
 
 def test_optimize_binds_public_lm_kwargs_to_combee_model_name(monkeypatch, tmp_path):
-    import gepa.lm
+    import async_gepa.lm
 
     _KwargRecordingLM.instances.clear()
-    monkeypatch.setattr(gepa.lm, "LM", _KwargRecordingLM)
+    monkeypatch.setattr(async_gepa.lm, "LM", _KwargRecordingLM)
     combee = ComBEEReflectionLM("test/model", rng=random.Random(0))
 
-    gepa.optimize(
+    async_gepa.optimize(
         seed_candidate={"system_prompt": "LEVEL=0"},
         trainset=TRAIN,
         valset=TRAIN,
@@ -1093,11 +1093,11 @@ def test_optimize_binds_public_lm_kwargs_to_combee_model_name(monkeypatch, tmp_p
 
 
 def test_optimize_anything_binds_public_lm_kwargs_to_combee_model_name(monkeypatch, tmp_path):
-    import gepa.lm
-    from gepa.optimize_anything import EngineConfig, GEPAConfig, ReflectionConfig, optimize_anything
+    import async_gepa.lm
+    from async_gepa.optimize_anything import EngineConfig, GEPAConfig, ReflectionConfig, optimize_anything
 
     _KwargRecordingLM.instances.clear()
-    monkeypatch.setattr(gepa.lm, "LM", _KwargRecordingLM)
+    monkeypatch.setattr(async_gepa.lm, "LM", _KwargRecordingLM)
     combee = ComBEEReflectionLM("test/model", rng=random.Random(0))
 
     optimize_anything(
@@ -1122,7 +1122,7 @@ def test_optimize_rejects_cost_cap_for_combee_plain_callable():
     from unittest.mock import MagicMock
 
     with pytest.raises(ValueError, match="cost-tracking LM"):
-        gepa.optimize(
+        async_gepa.optimize(
             seed_candidate={"c": "seed"},
             trainset=[{"q": 1}],
             adapter=MagicMock(propose_new_texts=None),
@@ -1133,7 +1133,7 @@ def test_optimize_rejects_cost_cap_for_combee_plain_callable():
 
 
 def test_optimize_anything_rejects_cost_cap_for_combee_plain_callable(tmp_path):
-    from gepa.optimize_anything import EngineConfig, GEPAConfig, ReflectionConfig, optimize_anything
+    from async_gepa.optimize_anything import EngineConfig, GEPAConfig, ReflectionConfig, optimize_anything
 
     with pytest.raises(ValueError, match="cost-tracking LM"):
         optimize_anything(
@@ -1155,8 +1155,8 @@ def test_optimize_anything_rejects_cost_cap_for_combee_plain_callable(tmp_path):
 def test_tracker_logs_combee_reflection_diagnostics():
     """Intermediate ComBEE outputs must be available to trackers, not only
     on the transient CandidateProposal object."""
-    from gepa.core.engine import GEPAEngine
-    from gepa.proposer.base import CandidateProposal
+    from async_gepa.core.engine import GEPAEngine
+    from async_gepa.proposer.base import CandidateProposal
 
     class CapturingTracker:
         def __init__(self):
@@ -1259,11 +1259,11 @@ def test_bind_rng_true_attribute_does_not_crash_wiring(tmp_path):
         bind_rng = True  # non-callable attribute
 
         def reflect(self, candidate, reflective_dataset, components_to_update):
-            from gepa.proposer.reflective_mutation.reflection_lm import ReflectionProposal
+            from async_gepa.proposer.reflective_mutation.reflection_lm import ReflectionProposal
 
             return ReflectionProposal(new_texts=dict.fromkeys(components_to_update, "v")), self
 
-    result = gepa.optimize(
+    result = async_gepa.optimize(
         seed_candidate={"system_prompt": "LEVEL=0"},
         trainset=TRAIN,
         valset=TRAIN,
@@ -1278,7 +1278,7 @@ def test_bind_rng_true_attribute_does_not_crash_wiring(tmp_path):
 
 
 def test_seedable_protocol_conformance():
-    from gepa.proposer.reflective_mutation.reflection_lm import SeedableReflectionLM
+    from async_gepa.proposer.reflective_mutation.reflection_lm import SeedableReflectionLM
 
     assert isinstance(ComBEEReflectionLM(lambda p: "x"), SeedableReflectionLM)
 

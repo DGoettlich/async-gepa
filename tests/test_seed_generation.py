@@ -4,7 +4,7 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from gepa.gepa_launcher import (
+from async_gepa.gepa_launcher import (
     _STR_CANDIDATE_KEY,
     EngineConfig,
     GEPAConfig,
@@ -13,7 +13,7 @@ from gepa.gepa_launcher import (
     _generate_seed_candidate,
     optimize_anything,
 )
-from gepa.strategies.instruction_proposal import InstructionProposalError
+from async_gepa.strategies.instruction_proposal import InstructionProposalError
 
 # ---------------------------------------------------------------------------
 # _build_seed_generation_prompt

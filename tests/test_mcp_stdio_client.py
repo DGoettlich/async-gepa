@@ -5,7 +5,7 @@ import pytest
 
 pytest.importorskip("mcp", reason="MCP SDK not installed")
 
-from gepa.adapters.mcp_adapter.mcp_client import StdioMCPClient
+from async_gepa.adapters.mcp_adapter.mcp_client import StdioMCPClient
 
 
 @pytest.fixture

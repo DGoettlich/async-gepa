@@ -1,6 +1,6 @@
 import random
 
-from gepa.gepa_utils import select_program_candidate_from_pareto_front
+from async_gepa.gepa_utils import select_program_candidate_from_pareto_front
 
 
 def test_select_program_candidate_respects_frequency_bias():

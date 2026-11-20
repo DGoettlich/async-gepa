@@ -11,9 +11,9 @@ stays single-threaded and pool/Pareto mutation stays sequential.
 
 import pytest
 
-from gepa.core.adapter import EvaluationBatch, invoke_batch_evaluate
-from gepa.strategies.proposal_sampling import IndependentSampling, SingleMutationSampling
-from gepa.strategies.proposal_selection import AllImprovements
+from async_gepa.core.adapter import EvaluationBatch, invoke_batch_evaluate
+from async_gepa.strategies.proposal_sampling import IndependentSampling, SingleMutationSampling
+from async_gepa.strategies.proposal_selection import AllImprovements
 
 
 class ImprovingAdapter:
@@ -57,9 +57,9 @@ class TraceAwareBatchImprovingAdapter(ImprovingAdapter):
 
 
 def _run(adapter, sampling_strategy, tmp_path):
-    import gepa
+    import async_gepa
 
-    return gepa.optimize(
+    return async_gepa.optimize(
         seed_candidate={"system_prompt": "s"},
         trainset=[{"id": i, "split": "train"} for i in range(4)],
         valset=[{"id": i, "split": "val"} for i in range(4)],
@@ -122,9 +122,9 @@ def test_batch_error_without_budget_progress_does_not_loop_when_exceptions_are_s
 
     adapter = BrokenAdapter()
     with pytest.raises(TypeError, match="adapter bug"):
-        import gepa
+        import async_gepa
 
-        gepa.optimize(
+        async_gepa.optimize(
             seed_candidate={"system_prompt": "s"},
             trainset=[{"id": 0, "split": "train"}],
             valset=[{"id": 0, "split": "val"}],
@@ -180,10 +180,10 @@ def test_issue_428_call_sequence_ends_with_untraced_accepted_val(tmp_path):
         def propose(self, candidate, dataset, components):
             return {"prompt": candidate["prompt"] + "x"}
 
-    import gepa
+    import async_gepa
 
     adapter = ReproAdapter()
-    gepa.optimize(
+    async_gepa.optimize(
         seed_candidate={"prompt": "a"},
         trainset=[{"split": "train"}],
         valset=[{"split": "val"}],

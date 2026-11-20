@@ -3,7 +3,7 @@ from types import SimpleNamespace
 
 import pytest
 
-from gepa.proposer.merge import (
+from async_gepa.proposer.merge import (
     MergeProposer,
     does_triplet_have_desirable_predictors,
     filter_ancestors,
@@ -339,7 +339,7 @@ def test_merge_proposer_skips_pairs_below_overlap_floor(monkeypatch):
     )
 
     monkeypatch.setattr(
-        "gepa.proposer.merge.find_dominator_programs",
+        "async_gepa.proposer.merge.find_dominator_programs",
         lambda *_args, **_kwargs: [1, 2],
     )
 
@@ -364,7 +364,7 @@ def test_merge_proposer_skips_pairs_below_overlap_floor(monkeypatch):
         return ({"pred": "merged"}, id1, id2, 0)
 
     monkeypatch.setattr(
-        "gepa.proposer.merge.sample_and_attempt_merge_programs_by_common_predictors",
+        "async_gepa.proposer.merge.sample_and_attempt_merge_programs_by_common_predictors",
         fake_sample,
     )
 
@@ -398,7 +398,7 @@ def test_merge_proposer_allows_pairs_meeting_overlap_floor(monkeypatch):
     )
 
     monkeypatch.setattr(
-        "gepa.proposer.merge.find_dominator_programs",
+        "async_gepa.proposer.merge.find_dominator_programs",
         lambda *_args, **_kwargs: [1, 2],
     )
 
@@ -423,7 +423,7 @@ def test_merge_proposer_allows_pairs_meeting_overlap_floor(monkeypatch):
         return ({"pred": "merged"}, id1, id2, 0)
 
     monkeypatch.setattr(
-        "gepa.proposer.merge.sample_and_attempt_merge_programs_by_common_predictors",
+        "async_gepa.proposer.merge.sample_and_attempt_merge_programs_by_common_predictors",
         fake_sample,
     )
 

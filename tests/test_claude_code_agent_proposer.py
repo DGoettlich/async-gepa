@@ -1,7 +1,7 @@
 # Copyright (c) 2025 Lakshya A Agrawal and the GEPA contributors
 # https://github.com/gepa-ai/gepa
 
-from gepa.oa.proposers.claude_code_agent import _extract_fenced
+from async_gepa.oa.proposers.claude_code_agent import _extract_fenced
 
 
 def test_extract_fenced_uses_last_complete_block():

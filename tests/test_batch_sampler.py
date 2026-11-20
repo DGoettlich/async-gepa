@@ -3,10 +3,10 @@ from types import SimpleNamespace
 
 import pytest
 
-import gepa
-from gepa.core.data_loader import ListDataLoader
-from gepa.gepa_launcher import EngineConfig, GEPAConfig, ReflectionConfig, optimize_anything
-from gepa.strategies.batch_sampler import EpochShuffledBatchSampler
+import async_gepa
+from async_gepa.core.data_loader import ListDataLoader
+from async_gepa.gepa_launcher import EngineConfig, GEPAConfig, ReflectionConfig, optimize_anything
+from async_gepa.strategies.batch_sampler import EpochShuffledBatchSampler
 
 
 class ChangingIdLoader:
@@ -79,7 +79,7 @@ def test_optimize_rejects_nonpositive_minibatch_size_before_evaluation(minibatch
                 ),
             )
             return
-        gepa.optimize(
+        async_gepa.optimize(
             seed_candidate={"system_prompt": "Answer the question."},
             trainset=[{"input": "question", "answer": "answer"}],
             task_lm=task_lm,

@@ -9,14 +9,14 @@ import tempfile
 
 import pytest
 
-from gepa.image import Image
-from gepa.gepa_launcher import (
+from async_gepa.image import Image
+from async_gepa.gepa_launcher import (
     EngineConfig,
     GEPAConfig,
     ReflectionConfig,
     optimize_anything,
 )
-from gepa.strategies.instruction_proposal import InstructionProposalSignature
+from async_gepa.strategies.instruction_proposal import InstructionProposalSignature
 
 # ---------------------------------------------------------------------------
 # Helpers

@@ -6,8 +6,8 @@ from typing import Any
 
 import numpy as np
 
-from gepa.utils.code_execution import ExecutionMode
-from gepa.utils.code_execution import execute_code as _execute_code
+from async_gepa.utils.code_execution import ExecutionMode
+from async_gepa.utils.code_execution import execute_code as _execute_code
 
 
 def execute_code(

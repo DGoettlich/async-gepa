@@ -68,10 +68,10 @@ jobs:
         run: |
           uv run --no-sync -p .venv python - <<'PY'
           from pathlib import Path
-          import gepa
+          import async_gepa
 
           root = Path.cwd().resolve()
-          module = Path(gepa.__file__).resolve()
+          module = Path(async_gepa.__file__).resolve()
           assert root in module.parents, f"Loaded {module}, expected a module under {root}"
           PY
       - name: Run DSPy consumer-contract tests

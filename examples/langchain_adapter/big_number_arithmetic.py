@@ -23,8 +23,8 @@ from langchain_core.language_models import BaseChatModel
 from langchain_core.messages import HumanMessage
 from langchain_core.tools import tool
 
-from gepa import optimize
-from gepa.adapters.langchain_adapter import (
+from async_gepa import optimize
+from async_gepa.adapters.langchain_adapter import (
     LangChainAdapter,
     last_message_text,
     make_reflection_lm,

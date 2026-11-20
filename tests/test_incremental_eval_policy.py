@@ -1,8 +1,8 @@
-import gepa
-from gepa.core.adapter import EvaluationBatch
-from gepa.core.data_loader import DataId, DataInst, DataLoader, ListDataLoader
-from gepa.core.state import GEPAState, ProgramIdx
-from gepa.strategies.eval_policy import EvaluationPolicy
+import async_gepa
+from async_gepa.core.adapter import EvaluationBatch
+from async_gepa.core.data_loader import DataId, DataInst, DataLoader, ListDataLoader
+from async_gepa.core.state import GEPAState, ProgramIdx
+from async_gepa.strategies.eval_policy import EvaluationPolicy
 
 
 class AutoExpandingListLoader(ListDataLoader):
@@ -116,7 +116,7 @@ def test_incremental_eval_policy_handles_dynamic_valset(tmp_path):
     val_loader = AutoExpandingListLoader(initial_valset, staged_val_items)
     adapter = DummyAdapter(val_loader=val_loader, expand_after=2)
 
-    result = gepa.optimize(
+    result = async_gepa.optimize(
         seed_candidate={"system_prompt": "weight=0"},
         trainset=trainset,
         valset=val_loader,

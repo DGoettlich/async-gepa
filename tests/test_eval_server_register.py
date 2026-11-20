@@ -14,9 +14,9 @@ from __future__ import annotations
 
 import threading
 
-from gepa.oa.budget import BudgetTracker
-from gepa.oa.eval_server import EvalServer
-from gepa.oa.task import Task
+from async_gepa.oa.budget import BudgetTracker
+from async_gepa.oa.eval_server import EvalServer
+from async_gepa.oa.task import Task
 
 
 def _server():

@@ -4,8 +4,8 @@ from unittest.mock import Mock
 
 import pytest
 
-from gepa.core.state import GEPAState
-from gepa.utils import stop_condition
+from async_gepa.core.state import GEPAState
+from async_gepa.utils import stop_condition
 
 
 @pytest.mark.parametrize("wall_clock_jump,elapsed,expected", [(3600.0, 5.0, False), (-3600.0, 11.0, True)])

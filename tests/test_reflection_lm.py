@@ -3,7 +3,7 @@
 
 """Tests for the ReflectionLM protocol and StatelessReflectionLM (#329 Phase 1)."""
 
-from gepa.proposer.reflective_mutation.reflection_lm import (
+from async_gepa.proposer.reflective_mutation.reflection_lm import (
     ReflectionLM,
     ReflectionProposal,
     StatelessReflectionLM,
@@ -23,7 +23,7 @@ class RecordingLM:
 
 
 class BatchRecordingLM(RecordingLM):
-    """A fake LM that also exposes ``batch_complete`` (like ``gepa.lm.LM``)."""
+    """A fake LM that also exposes ``batch_complete`` (like ``async_gepa.lm.LM``)."""
 
     def __init__(self, reply: str = "improved instruction"):
         super().__init__(reply)
@@ -146,7 +146,7 @@ def test_provider_length_finish_reason_rejects_plausible_unfenced_partial_output
     """Exercise real LM response normalization, not a parser-only fake."""
     from unittest.mock import MagicMock, patch
 
-    from gepa.lm import LM
+    from async_gepa.lm import LM
 
     response = MagicMock()
     response.choices = [MagicMock()]
@@ -217,7 +217,7 @@ class _ReflectOnlyLM:
 def _make_proposer(**overrides):
     from unittest.mock import MagicMock
 
-    from gepa.proposer.reflective_mutation.reflective_mutation import ReflectiveMutationProposer
+    from async_gepa.proposer.reflective_mutation.reflective_mutation import ReflectiveMutationProposer
 
     adapter = MagicMock()
     adapter.propose_new_texts = None
@@ -322,7 +322,7 @@ class _FixedProposalLM:
 def _make_propose_harness(reflection_strategy):
     from unittest.mock import MagicMock
 
-    from gepa.core.adapter import EvaluationBatch
+    from async_gepa.core.adapter import EvaluationBatch
 
     parent_eval = EvaluationBatch(
         outputs=["o"], scores=[0.4], trajectories=[{"step": 1}], objective_scores=None, num_metric_calls=1
@@ -350,7 +350,7 @@ def _make_propose_harness(reflection_strategy):
 
 
 def _make_state():
-    from gepa.core.state import GEPAState, ValsetEvaluation
+    from async_gepa.core.state import GEPAState, ValsetEvaluation
 
     base_eval = ValsetEvaluation(outputs_by_val_id={0: "o"}, scores_by_val_id={0: 0.5}, objective_scores_by_val_id=None)
     state = GEPAState({"c": "seed"}, base_eval, track_best_outputs=False)
@@ -409,7 +409,7 @@ def test_reflective_dataset_enricher_runs_after_adapter_and_before_reflection():
 
 
 def test_reflection_config_accepts_reflection_strategy():
-    from gepa.gepa_launcher import ReflectionConfig
+    from async_gepa.gepa_launcher import ReflectionConfig
 
     stub = _ReflectOnlyLM()
     assert ReflectionConfig(reflection_strategy=stub).reflection_strategy is stub
@@ -422,7 +422,7 @@ def test_reflection_config_accepts_reflection_strategy():
 
 
 def test_tracking_lm_exposes_batch_complete_conditionally():
-    from gepa.lm import TrackingLM
+    from async_gepa.lm import TrackingLM
 
     plain = TrackingLM(lambda p: "x")
     assert not hasattr(plain, "batch_complete")
@@ -490,8 +490,8 @@ def test_reflection_metadata_reaches_candidate_proposal():
 def test_trace_records_every_task_not_just_the_first():
     from unittest.mock import MagicMock
 
-    from gepa.core.adapter import EvaluationBatch
-    from gepa.strategies.proposal_sampling import ProposalTask
+    from async_gepa.core.adapter import EvaluationBatch
+    from async_gepa.strategies.proposal_sampling import ProposalTask
 
     class TwoTaskSampling:
         def sample_tasks(self, state, candidate_selector, batch_sampler, trainset):
@@ -625,8 +625,8 @@ def test_legacy_tracker_metric_keys_still_emitted():
 
 
 def test_gepa_optimize_accepts_reflection_strategy_without_reflection_lm():
-    import gepa
-    from gepa.core.adapter import EvaluationBatch
+    import async_gepa
+    from async_gepa.core.adapter import EvaluationBatch
 
     class Adapter:
         propose_new_texts = None
@@ -644,7 +644,7 @@ def test_gepa_optimize_accepts_reflection_strategy_without_reflection_lm():
             return {c: [{"Feedback": "f"}] for c in components}
 
     stub = _ReflectOnlyLM()
-    result = gepa.optimize(
+    result = async_gepa.optimize(
         seed_candidate={"c": "x"},
         trainset=[{"q": 1}] * 4,
         valset=[{"q": 1}] * 4,
@@ -654,17 +654,17 @@ def test_gepa_optimize_accepts_reflection_strategy_without_reflection_lm():
         display_progress_bar=False,
         seed=0,
     )
-    assert stub.calls, "reflection_strategy never invoked via gepa.optimize"
+    assert stub.calls, "reflection_strategy never invoked via async_gepa.optimize"
     assert result is not None
 
 
 def test_max_reflection_cost_with_costless_strategy_raises():
     import pytest
 
-    import gepa
+    import async_gepa
 
     with pytest.raises(ValueError, match="total_cost"):
-        gepa.optimize(
+        async_gepa.optimize(
             seed_candidate={"c": "x"},
             trainset=[{"q": 1}],
             adapter=__import__("unittest.mock", fromlist=["MagicMock"]).MagicMock(propose_new_texts=None),

@@ -5,7 +5,7 @@
 
 import pytest
 
-from gepa.gepa_launcher import (
+from async_gepa.gepa_launcher import (
     EngineConfig,
     GEPAConfig,
     OptimizationState,

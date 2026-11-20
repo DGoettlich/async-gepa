@@ -17,7 +17,7 @@ from pathlib import Path
 # Ensure the repository root is importable regardless of how this script is run
 sys.path.insert(0, str(Path(__file__).resolve().parents[3]))
 
-from gepa.optimize_anything import EngineConfig, GEPAConfig, ReflectionConfig, TrackingConfig, SideInfo, optimize_anything
+from async_gepa.optimize_anything import EngineConfig, GEPAConfig, ReflectionConfig, TrackingConfig, SideInfo, optimize_anything
 
 from utils.dataset import load_config_dataset
 from utils.lm import make_reflection_lm

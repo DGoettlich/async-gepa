@@ -21,15 +21,15 @@ def test_aime_prompt_optimize(mocked_lms, recorder_dir):
     Tests the GEPA optimization process using recorded/replayed LLM calls.
     """
     # Imports for the specific test logic
-    import gepa
-    from gepa.adapters.default_adapter.default_adapter import DefaultAdapter
+    import async_gepa
+    from async_gepa.adapters.default_adapter.default_adapter import DefaultAdapter
 
     # 1. Setup: Unpack fixtures and load data
     task_lm, reflection_lm = mocked_lms
     adapter = DefaultAdapter(model=task_lm)
 
     print("Initializing AIME dataset...")
-    trainset, valset, _ = gepa.examples.aime.init_dataset()
+    trainset, valset, _ = async_gepa.examples.aime.init_dataset()
     trainset = trainset[:10]
     valset = valset[:10]  # [3:8]
 
@@ -39,7 +39,7 @@ def test_aime_prompt_optimize(mocked_lms, recorder_dir):
 
     # 2. Execution: Run the core optimization logic
     print("Running GEPA optimization process...")
-    gepa_result = gepa.optimize(
+    gepa_result = async_gepa.optimize(
         seed_candidate=seed_prompt,
         trainset=trainset,
         valset=valset,

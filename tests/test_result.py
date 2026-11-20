@@ -1,7 +1,7 @@
 import pytest
 
-from gepa.core.result import GEPAResult
-from gepa.core.state import GEPAState, ValsetEvaluation
+from async_gepa.core.result import GEPAResult
+from async_gepa.core.state import GEPAState, ValsetEvaluation
 
 
 def test_gepa_result_from_dict_upcasts_version0():

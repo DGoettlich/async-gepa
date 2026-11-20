@@ -14,9 +14,9 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-import gepa.gepa_launcher as oa
-from gepa.gepa_launcher import EvaluatorWrapper, OptimizationState
-from gepa.utils.stdio_capture import StreamCaptureManager, ThreadLocalStreamCapture
+import async_gepa.gepa_launcher as oa
+from async_gepa.gepa_launcher import EvaluatorWrapper, OptimizationState
+from async_gepa.utils.stdio_capture import StreamCaptureManager, ThreadLocalStreamCapture
 
 # ---------------------------------------------------------------------------
 # oa.log()
@@ -550,7 +550,7 @@ class TestMakeLitellmLm:
     """Tests for the make_litellm_lm helper — should return an LM instance."""
 
     def test_returns_lm_instance(self):
-        from gepa.lm import LM
+        from async_gepa.lm import LM
 
         lm = oa.make_litellm_lm("test-model")
         assert isinstance(lm, LM)

@@ -1,6 +1,6 @@
 """Create a reflection language model callable for use with GEPA."""
 
-from gepa.proposer.reflective_mutation.base import LanguageModel
+from async_gepa.proposer.reflective_mutation.base import LanguageModel
 
 
 def make_reflection_lm(model: str) -> LanguageModel:

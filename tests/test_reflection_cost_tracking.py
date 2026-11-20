@@ -7,7 +7,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from gepa.lm import LM, TrackingLM
+from async_gepa.lm import LM, TrackingLM
 
 
 class TestLMCostTracking:
@@ -123,7 +123,7 @@ class TestTrackingLM:
 
 
 class TestCallableWrapping:
-    """Plain callables are wrapped in TrackingLM by gepa.optimize / optimize_anything."""
+    """Plain callables are wrapped in TrackingLM by async_gepa.optimize / optimize_anything."""
 
     def test_plain_callable_gets_wrapped(self):
         fn = lambda prompt: "```\nnew text\n```"
@@ -143,7 +143,7 @@ class TestMaxReflectionCostStopper:
     """Stopper reads cost from the LM instance."""
 
     def test_stops_when_budget_exceeded(self):
-        from gepa.utils import MaxReflectionCostStopper
+        from async_gepa.utils import MaxReflectionCostStopper
 
         mock_lm = MagicMock()
         mock_lm.total_cost = 10.5
@@ -151,7 +151,7 @@ class TestMaxReflectionCostStopper:
         assert stopper(MagicMock()) is True
 
     def test_continues_when_under_budget(self):
-        from gepa.utils import MaxReflectionCostStopper
+        from async_gepa.utils import MaxReflectionCostStopper
 
         mock_lm = MagicMock()
         mock_lm.total_cost = 5.0
@@ -159,7 +159,7 @@ class TestMaxReflectionCostStopper:
         assert stopper(MagicMock()) is False
 
     def test_tracking_lm_never_trips(self):
-        from gepa.utils import MaxReflectionCostStopper
+        from async_gepa.utils import MaxReflectionCostStopper
 
         lm = TrackingLM(lambda p: "response")
         lm("test")
@@ -167,7 +167,7 @@ class TestMaxReflectionCostStopper:
         assert stopper(MagicMock()) is False
 
     def test_none_lm_never_trips(self):
-        from gepa.utils import MaxReflectionCostStopper
+        from async_gepa.utils import MaxReflectionCostStopper
 
         stopper = MaxReflectionCostStopper(0.001, reflection_lm=None)
         assert stopper(MagicMock()) is False

@@ -25,16 +25,16 @@ from itertools import pairwise
 
 import pytest
 
-import gepa
-from gepa.core.adapter import EvaluationBatch
-from gepa.core.state import GEPAState
-from gepa.strategies.proposal_sampling import (
+import async_gepa
+from async_gepa.core.adapter import EvaluationBatch
+from async_gepa.core.state import GEPAState
+from async_gepa.strategies.proposal_sampling import (
     IndependentSampling,
     PxNSampling,
     SameParentSampling,
     SingleMutationSampling,
 )
-from gepa.strategies.proposal_selection import AllImprovements, BestImprovement, TopKImprovements
+from async_gepa.strategies.proposal_selection import AllImprovements, BestImprovement, TopKImprovements
 
 TRAIN = [{"k": i} for i in range(10)]
 
@@ -109,7 +109,7 @@ class _EventLog:
 def _run(sampling, selection, adapter_cls, cache, run_dir):
     adapter = adapter_cls()
     log = _EventLog()
-    result = gepa.optimize(
+    result = async_gepa.optimize(
         seed_candidate={"system_prompt": "LEVEL=0"},
         trainset=TRAIN,
         valset=TRAIN,
@@ -240,7 +240,7 @@ def test_write_agent_state_multi_accept_one_dir_per_candidate(tmp_path):
     """
     run_dir = tmp_path / "multi_accept_agent_state"
     adapter = SyntheticAdapter()
-    result = gepa.optimize(
+    result = async_gepa.optimize(
         seed_candidate={"system_prompt": "LEVEL=0"},
         trainset=TRAIN,
         valset=TRAIN,
@@ -301,7 +301,7 @@ def test_identical_children_are_deduplicated(tmp_path):
     one valset eval, and a truthful duplicate-rejection for the other."""
     adapter = SyntheticAdapter()
     log = _EventLog()
-    result = gepa.optimize(
+    result = async_gepa.optimize(
         seed_candidate={"system_prompt": "LEVEL=0"},
         trainset=TRAIN,
         valset=TRAIN,
@@ -341,7 +341,7 @@ class EveryOtherCallCriterion:
 def test_stateful_acceptance_criterion_judged_once_per_proposal(tmp_path):
     criterion = EveryOtherCallCriterion()
     log = _EventLog()
-    _result = gepa.optimize(
+    _result = async_gepa.optimize(
         seed_candidate={"system_prompt": "LEVEL=0"},
         trainset=TRAIN,
         valset=TRAIN,

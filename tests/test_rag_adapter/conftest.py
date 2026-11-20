@@ -10,8 +10,8 @@ from unittest.mock import Mock
 
 import pytest
 
-from gepa.adapters.generic_rag_adapter.generic_rag_adapter import RAGDataInst
-from gepa.adapters.generic_rag_adapter.vector_store_interface import VectorStoreInterface
+from async_gepa.adapters.generic_rag_adapter.generic_rag_adapter import RAGDataInst
+from async_gepa.adapters.generic_rag_adapter.vector_store_interface import VectorStoreInterface
 
 
 class TestVectorStore(VectorStoreInterface):

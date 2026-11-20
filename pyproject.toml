@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 # Do not add spaces around the '=' sign for any of the fields
 # preceded by a marker comment as it affects the publish workflow.
 #replace_package_name_marker
-name="gepa"
+name="async-gepa"
 #replace_package_version_marker
 version="0.1.4"
 description = "A framework for optimizing textual system components (AI prompts, code snippets, etc.) using LLM-based reflection and Pareto-efficient evolutionary search."
@@ -61,7 +61,7 @@ confidence = [
 ]
 dspy = []
 test = [
-    "gepa[full]",
+    "async-gepa[full]",
     "pytest",
     "pyright",
     # Exercises the psutil-backed child-process cleanup in
@@ -78,14 +78,14 @@ build = [
     "requests>=2.33.0"
 ]
 dev = [
-    "gepa[test]",
-    "gepa[build]",
+    "async-gepa[test]",
+    "async-gepa[build]",
     "pre-commit",
     "build>=1.0.3",
     "ruff>=0.3.0"
 ]
 gskill = [
-    "gepa[full]",
+    "async-gepa[full]",
     "swesmith",
     "docker",
     "python-dotenv",
@@ -106,7 +106,7 @@ langchain = [
 where = ["src"]
 
 [tool.setuptools.package-data]
-gepa = ["py.typed"]
+async_gepa = ["py.typed"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
@@ -160,7 +160,7 @@ skip-magic-trailing-comma = false
 line-ending = "auto"
 
 [tool.ruff.lint.isort]
-known-first-party = ["gepa"]
+known-first-party = ["async_gepa"]
 known-third-party = ["dspy"]
 
 [tool.ruff.lint.flake8-tidy-imports]
@@ -173,5 +173,5 @@ ban-relative-imports = "all"
     "ARG001",  # Allow unused arguments in tests (like pytest fixtures)
 ]
 "__init__.py" = ["F401"]  # Init files can be empty
-"src/gepa/gskill/**/*.py" = ["E402"]  # gskill suppresses logging before imports
+"src/async_gepa/gskill/**/*.py" = ["E402"]  # gskill suppresses logging before imports
 "examples/**/*.py" = ["E402"]  # Jupyter-notebook-style scripts import mid-file

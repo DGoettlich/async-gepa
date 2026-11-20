@@ -3,11 +3,11 @@
 
 import pytest
 
-from gepa.lm import LMOutput
+from async_gepa.lm import LMOutput
 
 pytest.importorskip("dspy")
 
-from gepa.adapters.dspy_adapter.dspy_adapter import DspyAdapter  # noqa: E402
+from async_gepa.adapters.dspy_adapter.dspy_adapter import DspyAdapter  # noqa: E402
 
 
 def test_stripped_lm_call_accepts_string_subclasses_without_losing_metadata():

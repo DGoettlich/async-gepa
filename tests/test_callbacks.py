@@ -14,7 +14,7 @@ from unittest.mock import Mock
 
 import pytest
 
-from gepa.core.callbacks import (
+from async_gepa.core.callbacks import (
     BudgetUpdatedEvent,
     CandidateAcceptedEvent,
     CandidateRejectedEvent,
@@ -1303,7 +1303,7 @@ def has_callback_support():
     """
     import inspect
 
-    from gepa import optimize
+    from async_gepa import optimize
 
     sig = inspect.signature(optimize)
     return "callbacks" in sig.parameters
@@ -1320,7 +1320,7 @@ class TestIntegration:
     @pytest.mark.skipif(not has_callback_support(), reason="callbacks parameter not yet added to optimize()")
     def test_callback_receives_real_optimization_flow(self):
         """End-to-end test with real adapter and mock LM."""
-        from gepa import optimize
+        from async_gepa import optimize
 
         callback = RecordingCallback()
 
@@ -1347,7 +1347,7 @@ class TestIntegration:
     @pytest.mark.skipif(not has_callback_support(), reason="callbacks parameter not yet added to optimize()")
     def test_callback_with_stopper_interaction(self):
         """Verify callbacks work correctly with stop conditions."""
-        from gepa import optimize
+        from async_gepa import optimize
 
         callback = RecordingCallback()
 

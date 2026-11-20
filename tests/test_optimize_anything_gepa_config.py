@@ -15,9 +15,9 @@ import os
 
 import pytest
 
-from gepa.gepa_launcher import TrackingConfig
-from gepa.oa.config import OptimizeAnythingConfig
-from gepa.oa.engines.gepa import GepaEngine
+from async_gepa.gepa_launcher import TrackingConfig
+from async_gepa.oa.config import OptimizeAnythingConfig
+from async_gepa.oa.engines.gepa import GepaEngine
 
 
 class _FakeLM:
@@ -52,8 +52,8 @@ def test_legacy_gepa_config_call_returns_gepa_result():
     """A v0.1.x-style call — legacy imports, ``GEPAConfig`` — runs the launcher
     directly and returns its ``GEPAResult``, so old examples using ``result.candidates`` / ``best_idx`` /
     ``val_aggregate_scores`` run unmodified."""
-    from gepa.core.result import GEPAResult
-    from gepa.optimize_anything import EngineConfig, GEPAConfig, ReflectionConfig, optimize_anything
+    from async_gepa.core.result import GEPAResult
+    from async_gepa.optimize_anything import EngineConfig, GEPAConfig, ReflectionConfig, optimize_anything
 
     result = optimize_anything(
         seed_candidate="short",
@@ -76,8 +76,8 @@ def test_legacy_gepa_config_returns_gepa_result_even_when_budget_dies_early():
     """Budget smaller than the seed's valset pass: the launcher still evaluates
     the seed and returns a ``GEPAResult`` — legacy callers must never see the
     omni Result."""
-    from gepa.core.result import GEPAResult
-    from gepa.optimize_anything import EngineConfig, GEPAConfig, ReflectionConfig, optimize_anything
+    from async_gepa.core.result import GEPAResult
+    from async_gepa.optimize_anything import EngineConfig, GEPAConfig, ReflectionConfig, optimize_anything
 
     result = optimize_anything(
         seed_candidate="short",
@@ -97,7 +97,7 @@ def test_legacy_gepa_config_returns_gepa_result_even_when_budget_dies_early():
 
 
 def test_unknown_config_type_raises_type_error():
-    from gepa.optimize_anything import optimize_anything
+    from async_gepa.optimize_anything import optimize_anything
 
     with pytest.raises(TypeError, match="OptimizeAnythingConfig or GEPAConfig"):
         optimize_anything(seed_candidate="short", evaluator=_evaluator, config={"max_evals": 4})  # type: ignore[arg-type]
@@ -107,7 +107,7 @@ def test_legacy_result_keeps_eval_log_and_budget_metadata():
     """The legacy path has no eval server but still returns its bookkeeping:
     one ``eval_log`` entry per evaluator call and the budget / cost / wall-time
     metadata. ``total_evals`` is the launcher's ``total_metric_calls``."""
-    from gepa.optimize_anything import EngineConfig, GEPAConfig, ReflectionConfig, optimize_anything
+    from async_gepa.optimize_anything import EngineConfig, GEPAConfig, ReflectionConfig, optimize_anything
 
     calls = []
 
@@ -141,10 +141,10 @@ def test_legacy_result_keeps_eval_log_and_budget_metadata():
 
 def test_legacy_reflection_lm_string_is_not_written_back(monkeypatch):
     """Building the reflection LM up front (to read its cost) happens on a copy."""
-    import gepa.lm
-    from gepa.optimize_anything import EngineConfig, GEPAConfig, ReflectionConfig, optimize_anything
+    import async_gepa.lm
+    from async_gepa.optimize_anything import EngineConfig, GEPAConfig, ReflectionConfig, optimize_anything
 
-    monkeypatch.setattr(gepa.lm.LM, "__call__", lambda self, *a, **k: _FakeLM()())
+    monkeypatch.setattr(async_gepa.lm.LM, "__call__", lambda self, *a, **k: _FakeLM()())
     config = GEPAConfig(engine=EngineConfig(max_metric_calls=4), reflection=ReflectionConfig(reflection_lm="openai/x"))
     optimize_anything(seed_candidate="short", evaluator=_evaluator, objective="maximize length", config=config)
     assert config.reflection.reflection_lm == "openai/x"
@@ -154,7 +154,7 @@ def test_legacy_run_dir_matches_v014_layout(tmp_path, monkeypatch):
     """A legacy config runs the launcher directly, so ``run_dir`` holds only
     what v0.1.4 wrote there: ``gepa_state.bin`` at the root and no eval-server
     records. Nothing is created under the current directory (#448)."""
-    from gepa.optimize_anything import EngineConfig, GEPAConfig, ReflectionConfig, optimize_anything
+    from async_gepa.optimize_anything import EngineConfig, GEPAConfig, ReflectionConfig, optimize_anything
 
     run_dir = tmp_path / "run"
     monkeypatch.chdir(tmp_path)
@@ -179,7 +179,7 @@ def test_legacy_cap_finishes_the_iteration_like_v014(tmp_path, monkeypatch):
     in v0.1.4, instead of discarding the in-flight child. Repro from the issue:
     cap 7 gives 8 evaluator calls and 2 candidates, no ``_budget`` reaches the
     reflection prompt, and nothing is written under the current directory."""
-    from gepa.optimize_anything import EngineConfig, GEPAConfig, ReflectionConfig, optimize_anything
+    from async_gepa.optimize_anything import EngineConfig, GEPAConfig, ReflectionConfig, optimize_anything
 
     monkeypatch.chdir(tmp_path)
     calls, prompts = [], []
@@ -212,8 +212,8 @@ def test_legacy_gepa_config_accepts_test_set():
     """With the single unified GEPAResult, ``test_set`` works on every path —
     including a legacy ``GEPAConfig`` — because the result now carries a
     ``metadata`` dict for the held-out scores instead of rejecting them."""
-    from gepa.core.result import GEPAResult
-    from gepa.optimize_anything import EngineConfig, GEPAConfig, ReflectionConfig, optimize_anything
+    from async_gepa.core.result import GEPAResult
+    from async_gepa.optimize_anything import EngineConfig, GEPAConfig, ReflectionConfig, optimize_anything
 
     result = optimize_anything(
         seed_candidate="short",
@@ -236,9 +236,9 @@ def test_no_config_returns_unified_gepa_result(monkeypatch):
     """``optimize_anything(seed, evaluator=fn)`` with config omitted returns a
     GEPAResult exposing both the lean accessors and the pool surface
     (``candidates`` / ``val_aggregate_scores`` / ``to_dict()``) — issue #409."""
-    from gepa.core.result import GEPAResult
-    from gepa.oa.engine import Result
-    from gepa.optimize_anything import optimize_anything
+    from async_gepa.core.result import GEPAResult
+    from async_gepa.oa.engine import Result
+    from async_gepa.optimize_anything import optimize_anything
 
     stashed = GEPAResult(
         candidates=[{"current_candidate": "improved"}],
@@ -260,7 +260,7 @@ def test_no_config_returns_unified_gepa_result(monkeypatch):
             metadata={"gepa_result": stashed, "engine": "gepa"},
         )
 
-    monkeypatch.setattr("gepa.optimize_anything._run_engine", _fake_run_engine)
+    monkeypatch.setattr("async_gepa.optimize_anything._run_engine", _fake_run_engine)
 
     result = optimize_anything(
         seed_candidate="short",
@@ -290,9 +290,9 @@ def test_no_config_returns_unified_gepa_result(monkeypatch):
 def test_no_config_accepts_test_set(monkeypatch):
     """``test_set`` with config omitted is accepted; held-out scores land in
     ``metadata`` on the unified GEPAResult."""
-    from gepa.core.result import GEPAResult
-    from gepa.oa.engine import Result
-    from gepa.optimize_anything import optimize_anything
+    from async_gepa.core.result import GEPAResult
+    from async_gepa.oa.engine import Result
+    from async_gepa.optimize_anything import optimize_anything
 
     def _fake_run_engine(server, engine, *, owns_server):
         return Result(
@@ -302,7 +302,7 @@ def test_no_config_accepts_test_set(monkeypatch):
             metadata={"test_score": 0.4, "baseline_test_score": 0.2},
         )
 
-    monkeypatch.setattr("gepa.optimize_anything._run_engine", _fake_run_engine)
+    monkeypatch.setattr("async_gepa.optimize_anything._run_engine", _fake_run_engine)
 
     result = optimize_anything(
         seed_candidate="short",
@@ -319,8 +319,8 @@ def test_no_config_accepts_test_set(monkeypatch):
 def test_explicit_optimize_anything_config_returns_unified_gepa_result():
     """An explicit ``OptimizeAnythingConfig`` returns the same unified
     GEPAResult as the no-config path: lean accessors plus the pool surface."""
-    from gepa.core.result import GEPAResult
-    from gepa.optimize_anything import optimize_anything
+    from async_gepa.core.result import GEPAResult
+    from async_gepa.optimize_anything import optimize_anything
 
     result = optimize_anything(
         seed_candidate="short",
@@ -349,9 +349,9 @@ def test_non_gepa_engine_returns_single_candidate_gepa_result(monkeypatch):
     """A generic engine (no candidate pool stashed) is projected onto a
     single-candidate GEPAResult: lean core populated from its Result, eval log
     and metadata attached, gepa-only pool fields left None/empty."""
-    from gepa.core.result import GEPAResult
-    from gepa.oa.engine import Result
-    from gepa.optimize_anything import optimize_anything
+    from async_gepa.core.result import GEPAResult
+    from async_gepa.oa.engine import Result
+    from async_gepa.optimize_anything import optimize_anything
 
     def _fake_run_engine(server, engine, *, owns_server):
         return Result(
@@ -362,7 +362,7 @@ def test_non_gepa_engine_returns_single_candidate_gepa_result(monkeypatch):
             metadata={"engine": "best_of_n", "wall_time": 0.01},
         )
 
-    monkeypatch.setattr("gepa.optimize_anything._run_engine", _fake_run_engine)
+    monkeypatch.setattr("async_gepa.optimize_anything._run_engine", _fake_run_engine)
 
     result = optimize_anything(
         seed_candidate="short",
@@ -391,7 +391,7 @@ def test_non_gepa_engine_returns_single_candidate_gepa_result(monkeypatch):
 
 def test_full_config_passthrough_and_reflective_dataset_persistence(tmp_path):
     """End-to-end: tracking flows through, reflective_dataset is persisted by core."""
-    from gepa.optimize_anything import optimize_anything
+    from async_gepa.optimize_anything import optimize_anything
 
     result = optimize_anything(
         seed_candidate="short",

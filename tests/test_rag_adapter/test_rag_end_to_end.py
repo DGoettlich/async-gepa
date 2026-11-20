@@ -8,13 +8,13 @@ import pytest
 from test_data_loader import StagedDataLoader
 from test_incremental_eval_policy import RoundRobinSampleEvaluationPolicy
 
-from gepa.adapters.generic_rag_adapter.generic_rag_adapter import GenericRAGAdapter
+from async_gepa.adapters.generic_rag_adapter.generic_rag_adapter import GenericRAGAdapter
 
 
 @pytest.fixture
 def sample_ai_ml_dataset():
     """Create a sample AI/ML knowledge dataset for RAG testing."""
-    from gepa.adapters.generic_rag_adapter.generic_rag_adapter import RAGDataInst
+    from async_gepa.adapters.generic_rag_adapter.generic_rag_adapter import RAGDataInst
 
     return [
         RAGDataInst(
@@ -55,7 +55,7 @@ def mock_chromadb_store(sample_ai_ml_dataset):
     """Create a mock ChromaDB vector store with AI/ML knowledge base."""
     from typing import Any
 
-    from gepa.adapters.generic_rag_adapter.vector_store_interface import VectorStoreInterface
+    from async_gepa.adapters.generic_rag_adapter.vector_store_interface import VectorStoreInterface
 
     class MockChromaDBStore(VectorStoreInterface):
         """Mock ChromaDB store for RAG end-to-end testing."""
@@ -233,8 +233,8 @@ class RAGTestAdapter(GenericRAGAdapter):
         self.vector_store = vector_store
         self.config = rag_config
 
-        from gepa.adapters.generic_rag_adapter.evaluation_metrics import RAGEvaluationMetrics
-        from gepa.adapters.generic_rag_adapter.rag_pipeline import RAGPipeline
+        from async_gepa.adapters.generic_rag_adapter.evaluation_metrics import RAGEvaluationMetrics
+        from async_gepa.adapters.generic_rag_adapter.rag_pipeline import RAGPipeline
 
         self.rag_pipeline = RAGPipeline(vector_store, simple_rag_lm, rag_config)
         self.evaluator = RAGEvaluationMetrics()
@@ -292,7 +292,7 @@ def test_rag_end_to_end_optimization(sample_ai_ml_dataset, mock_chromadb_store):
     """
     # Imports for the specific test logic
 
-    import gepa
+    import async_gepa
 
     # Create RAG configuration
     rag_config = DEFAULT_RAG_CONFIG.copy()
@@ -308,7 +308,7 @@ def test_rag_end_to_end_optimization(sample_ai_ml_dataset, mock_chromadb_store):
     seed_candidate = {"answer_generation": SEED_PROMPT}
 
     # 2. Execution: Run the core RAG optimization logic
-    gepa_result = gepa.optimize(
+    gepa_result = async_gepa.optimize(
         seed_candidate=seed_candidate,
         trainset=trainset,
         valset=valset,
@@ -403,7 +403,7 @@ def test_rag_end_to_end_optimization(sample_ai_ml_dataset, mock_chromadb_store):
     # 7. Verify reproducibility - with same mock functions, results should be deterministic
     # Run a second optimization with identical setup
     adapter2 = RAGTestAdapter(vector_store=mock_chromadb_store, rag_config=rag_config)
-    gepa_result2 = gepa.optimize(
+    gepa_result2 = async_gepa.optimize(
         seed_candidate=seed_candidate,
         trainset=trainset,
         valset=valset,
@@ -478,7 +478,7 @@ def test_rag_dynamic_valset_round_robin_sample(sample_ai_ml_dataset, mock_chroma
     Runs the RAG end-to-end workflow with a dynamically expanding validation loader and the round-robin sampling policy.
     """
 
-    import gepa
+    import async_gepa
 
     trainset = sample_ai_ml_dataset[:2]
     initial_val_items = sample_ai_ml_dataset[2:3]
@@ -498,7 +498,7 @@ def test_rag_dynamic_valset_round_robin_sample(sample_ai_ml_dataset, mock_chroma
         boost_amount=0.25,
     )
 
-    result_stage_one = gepa.optimize(
+    result_stage_one = async_gepa.optimize(
         seed_candidate={"answer_generation": SEED_PROMPT},
         trainset=trainset,
         valset=val_loader,
@@ -524,7 +524,7 @@ def test_rag_dynamic_valset_round_robin_sample(sample_ai_ml_dataset, mock_chroma
         boost_amount=0.25,
     )
 
-    result_stage_two = gepa.optimize(
+    result_stage_two = async_gepa.optimize(
         seed_candidate=result_stage_one.best_candidate,
         trainset=trainset,
         valset=val_loader,
@@ -552,7 +552,7 @@ def test_rag_adapter_basic_functionality(mock_chromadb_store):
     """
     Test basic RAG adapter functionality without optimization (faster test for CI).
     """
-    from gepa.adapters.generic_rag_adapter.generic_rag_adapter import GenericRAGAdapter, RAGDataInst
+    from async_gepa.adapters.generic_rag_adapter.generic_rag_adapter import GenericRAGAdapter, RAGDataInst
 
     with patch("litellm.completion") as mock_litellm:
         # Setup simple mock response

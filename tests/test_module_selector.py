@@ -2,9 +2,9 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from gepa import optimize
-from gepa.strategies.batch_sampler import EpochShuffledBatchSampler
-from gepa.strategies.component_selector import (
+from async_gepa import optimize
+from async_gepa.strategies.batch_sampler import EpochShuffledBatchSampler
+from async_gepa.strategies.component_selector import (
     AllReflectionComponentSelector,
     RoundRobinReflectionComponentSelector,
 )
@@ -45,8 +45,8 @@ def base_optimize_kwargs(common_mocks):
     }
 
 
-@patch("gepa.api.GEPAEngine.run")
-@patch("gepa.api.ReflectiveMutationProposer")
+@patch("async_gepa.api.GEPAEngine.run")
+@patch("async_gepa.api.ReflectiveMutationProposer")
 def test_module_selector_default_round_robin(mock_proposer, mock_run, common_mocks):
     """Test that module_selector defaults to round robin."""
     mock_run_return, mock_adapter = common_mocks
@@ -71,8 +71,8 @@ def test_module_selector_default_round_robin(mock_proposer, mock_run, common_moc
     assert result is not None
 
 
-@patch("gepa.api.GEPAEngine.run")
-@patch("gepa.api.ReflectiveMutationProposer")
+@patch("async_gepa.api.GEPAEngine.run")
+@patch("async_gepa.api.ReflectiveMutationProposer")
 def test_module_selector_string_round_robin(mock_proposer, mock_run, common_mocks):
     """Test that module_selector='round_robin' works with optimize()."""
     mock_run_return, mock_adapter = common_mocks
@@ -97,8 +97,8 @@ def test_module_selector_string_round_robin(mock_proposer, mock_run, common_mock
     assert result is not None
 
 
-@patch("gepa.api.GEPAEngine.run")
-@patch("gepa.api.ReflectiveMutationProposer")
+@patch("async_gepa.api.GEPAEngine.run")
+@patch("async_gepa.api.ReflectiveMutationProposer")
 def test_module_selector_string_all(mock_proposer, mock_run, common_mocks):
     """Test that module_selector='all' works with optimize()."""
     mock_run_return, mock_adapter = common_mocks
@@ -123,8 +123,8 @@ def test_module_selector_string_all(mock_proposer, mock_run, common_mocks):
     assert result is not None
 
 
-@patch("gepa.api.GEPAEngine.run")
-@patch("gepa.api.ReflectiveMutationProposer")
+@patch("async_gepa.api.GEPAEngine.run")
+@patch("async_gepa.api.ReflectiveMutationProposer")
 def test_module_selector_custom_instance(mock_proposer, mock_run, common_mocks):
     """Test that module_selector accepts custom instances with optimize()."""
     mock_run_return, mock_adapter = common_mocks
@@ -193,8 +193,8 @@ def test_module_selector_invalid_string_raises_error(common_mocks):
         )
 
 
-@patch("gepa.api.GEPAEngine.run")
-@patch("gepa.api.ReflectiveMutationProposer")
+@patch("async_gepa.api.GEPAEngine.run")
+@patch("async_gepa.api.ReflectiveMutationProposer")
 def test_batch_sampler_configuration(mock_proposer, mock_run, common_mocks, base_optimize_kwargs):
     """Test various batch_sampler configuration options."""
     mock_run_return, _ = common_mocks

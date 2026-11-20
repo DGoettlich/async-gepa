@@ -15,7 +15,7 @@ import math
 
 import pytest
 
-from gepa.adapters.confidence_adapter.scoring import (
+from async_gepa.adapters.confidence_adapter.scoring import (
     LinearBlendScoring,
     ScoringStrategy,
     SigmoidScoring,

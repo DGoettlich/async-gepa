@@ -14,7 +14,7 @@ import threading
 
 import pytest
 
-from gepa.adapters.optimize_anything_adapter.optimize_anything_adapter import OptimizeAnythingAdapter
+from async_gepa.adapters.optimize_anything_adapter.optimize_anything_adapter import OptimizeAnythingAdapter
 
 
 def _make_evaluator(barrier: threading.Barrier | None = None):

@@ -3,8 +3,8 @@
 
 import pytest
 
-from gepa.lm import LMOutput
-from gepa.strategies.instruction_proposal import (
+from async_gepa.lm import LMOutput
+from async_gepa.strategies.instruction_proposal import (
     InstructionProposalError,
     InstructionProposalSignature,
     parse_proposal,
@@ -172,8 +172,8 @@ End text
 
 def test_unfenced_lm_output_is_saved_as_plain_str(tmp_path):
     """An unfenced ``LMOutput`` reflection must not be pickled into the candidate or ``gepa_state.bin``."""
-    import gepa
-    from gepa.core.adapter import EvaluationBatch
+    import async_gepa
+    from async_gepa.core.adapter import EvaluationBatch
 
     class Adapter:
         propose_new_texts = None
@@ -186,7 +186,7 @@ def test_unfenced_lm_output_is_saved_as_plain_str(tmp_path):
         def make_reflective_dataset(self, candidate, eval_batch, components_to_update):
             return {c: [{"Feedback": "f"}] for c in components_to_update}
 
-    result = gepa.optimize(
+    result = async_gepa.optimize(
         seed_candidate={"p": "seed"},
         trainset=[1, 2],
         valset=[1, 2],

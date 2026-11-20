@@ -117,15 +117,15 @@ def test_callbacks_during_optimization(mocked_lms, recorder_dir):
     5. Budget callbacks are called when metric calls are made
     6. Pareto front update callbacks are called when new candidates are accepted
     """
-    import gepa
-    from gepa.adapters.default_adapter.default_adapter import DefaultAdapter
+    import async_gepa
+    from async_gepa.adapters.default_adapter.default_adapter import DefaultAdapter
 
     # 1. Setup: Unpack fixtures and load data
     task_lm, reflection_lm = mocked_lms
     adapter = DefaultAdapter(model=task_lm)
 
     print("Initializing AIME dataset...")
-    trainset, valset, _ = gepa.examples.aime.init_dataset()
+    trainset, valset, _ = async_gepa.examples.aime.init_dataset()
     trainset = trainset[:10]
     valset = valset[:10]
 
@@ -138,7 +138,7 @@ def test_callbacks_during_optimization(mocked_lms, recorder_dir):
 
     # 2. Execution: Run the core optimization logic with callbacks
     print("Running GEPA optimization process with callbacks...")
-    gepa_result = gepa.optimize(
+    gepa_result = async_gepa.optimize(
         seed_candidate=seed_prompt,
         trainset=trainset,
         valset=valset,
@@ -283,13 +283,13 @@ def test_multiple_callbacks_all_receive_events(mocked_lms, recorder_dir):
     """
     Tests that multiple callbacks all receive the same events.
     """
-    import gepa
-    from gepa.adapters.default_adapter.default_adapter import DefaultAdapter
+    import async_gepa
+    from async_gepa.adapters.default_adapter.default_adapter import DefaultAdapter
 
     task_lm, reflection_lm = mocked_lms
     adapter = DefaultAdapter(model=task_lm)
 
-    trainset, valset, _ = gepa.examples.aime.init_dataset()
+    trainset, valset, _ = async_gepa.examples.aime.init_dataset()
     trainset = trainset[:10]
     valset = valset[:10]
 
@@ -302,7 +302,7 @@ def test_multiple_callbacks_all_receive_events(mocked_lms, recorder_dir):
     callback1 = RecordingCallback()
     callback2 = RecordingCallback()
 
-    gepa.optimize(
+    async_gepa.optimize(
         seed_candidate=seed_prompt,
         trainset=trainset,
         valset=valset,
@@ -330,13 +330,13 @@ def test_partial_callback_implementation(mocked_lms, recorder_dir):
     """
     Tests that callbacks with only some methods implemented work correctly.
     """
-    import gepa
-    from gepa.adapters.default_adapter.default_adapter import DefaultAdapter
+    import async_gepa
+    from async_gepa.adapters.default_adapter.default_adapter import DefaultAdapter
 
     task_lm, reflection_lm = mocked_lms
     adapter = DefaultAdapter(model=task_lm)
 
-    trainset, valset, _ = gepa.examples.aime.init_dataset()
+    trainset, valset, _ = async_gepa.examples.aime.init_dataset()
     trainset = trainset[:10]
     valset = valset[:10]
 
@@ -360,7 +360,7 @@ def test_partial_callback_implementation(mocked_lms, recorder_dir):
     callback = PartialCallback()
 
     # This should not raise any errors
-    gepa.optimize(
+    async_gepa.optimize(
         seed_candidate=seed_prompt,
         trainset=trainset,
         valset=valset,

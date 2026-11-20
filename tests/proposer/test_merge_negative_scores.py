@@ -2,10 +2,10 @@ import random
 
 import pytest
 
-from gepa.core.data_loader import ListDataLoader
-from gepa.core.state import GEPAState, ValsetEvaluation
-from gepa.logging.logger import StdOutLogger
-from gepa.proposer.merge import (
+from async_gepa.core.data_loader import ListDataLoader
+from async_gepa.core.state import GEPAState, ValsetEvaluation
+from async_gepa.logging.logger import StdOutLogger
+from async_gepa.proposer.merge import (
     MergeProposer,
     find_common_ancestor_pair,
     sample_and_attempt_merge_programs_by_common_predictors,

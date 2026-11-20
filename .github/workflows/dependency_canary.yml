@@ -51,7 +51,7 @@ jobs:
           uv pip install -p .venv '.[dev]'
           uv pip list -p .venv
       - name: Import smoke test
-        run: .venv/bin/python -c "import gepa"
+        run: .venv/bin/python -c "import async_gepa"
       - name: Run tests with pytest
         # Not `uv run` — that would sync the environment back to uv.lock and
         # clobber the fresh resolution under test.

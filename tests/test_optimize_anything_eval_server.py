@@ -11,9 +11,9 @@ from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from unittest.mock import patch
 
-from gepa.oa.budget import BudgetTracker
-from gepa.oa.eval_server import EvalServer
-from gepa.oa.task import Task
+from async_gepa.oa.budget import BudgetTracker
+from async_gepa.oa.eval_server import EvalServer
+from async_gepa.oa.task import Task
 
 
 class OptimizeAnythingEvalServerTests(unittest.TestCase):
@@ -130,7 +130,7 @@ class OptimizeAnythingEvalServerTests(unittest.TestCase):
                     return original_replace(source, target)
 
                 try:
-                    with patch.object(Path, "replace", replace_once), patch("gepa.oa.eval_server.time.sleep") as sleep:
+                    with patch.object(Path, "replace", replace_once), patch("async_gepa.oa.eval_server.time.sleep") as sleep:
                         if winerror is None:
                             with self.assertRaises(PermissionError):
                                 server._write_summary({"best_score": 1.0})
@@ -161,7 +161,7 @@ class OptimizeAnythingEvalServerTests(unittest.TestCase):
             try:
                 with (
                     patch.object(Path, "replace", side_effect=error) as replace,
-                    patch("gepa.oa.eval_server.time.sleep") as sleep,
+                    patch("async_gepa.oa.eval_server.time.sleep") as sleep,
                 ):
                     with self.assertRaises(PermissionError):
                         server._write_summary({"best_score": 1.0})
@@ -270,7 +270,7 @@ class OptimizeAnythingEvalServerTests(unittest.TestCase):
         def _refuse_to_bind(*args, **kwargs):
             raise AssertionError("HTTP listener must not be bound for in-process runs")
 
-        from gepa.optimize_anything import EngineConfig, GEPAConfig, ReflectionConfig, optimize_anything
+        from async_gepa.optimize_anything import EngineConfig, GEPAConfig, ReflectionConfig, optimize_anything
 
         with patch.object(http.server, "ThreadingHTTPServer", _refuse_to_bind):
             result = optimize_anything(

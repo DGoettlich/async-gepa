@@ -18,7 +18,7 @@ from collections import defaultdict
 from pathlib import Path
 from typing import Any
 
-from gepa.optimize_anything import SideInfo
+from async_gepa.optimize_anything import SideInfo
 
 logger = logging.getLogger(__name__)
 

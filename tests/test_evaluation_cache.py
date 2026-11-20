@@ -7,7 +7,7 @@ from pathlib import Path
 
 import pytest
 
-from gepa.core.state import TRAINSET_CACHE_SPLIT, EvaluationCache
+from async_gepa.core.state import TRAINSET_CACHE_SPLIT, EvaluationCache
 
 # RECORDER_DIR paths for cached tests (imported lazily to avoid module conflicts)
 # Source: tests/test_aime_prompt_optimization/test_aime_prompt_optimize.py
@@ -95,7 +95,7 @@ class TestEvaluationCacheIntegration:
     @staticmethod
     def _create_dummy_adapter():
         """Create a dummy adapter for testing."""
-        from gepa.core.adapter import EvaluationBatch
+        from async_gepa.core.adapter import EvaluationBatch
 
         class DummyAdapter:
             def __init__(self):
@@ -118,9 +118,9 @@ class TestEvaluationCacheIntegration:
 
     def test_optimize_with_caching_enabled(self, tmp_path):
         """Test that optimize runs correctly with caching enabled."""
-        import gepa
+        import async_gepa
 
-        result = gepa.optimize(
+        result = async_gepa.optimize(
             seed_candidate={"system_prompt": "test"},
             trainset=[{"id": i} for i in range(5)],
             valset=[{"id": i} for i in range(5)],
@@ -134,13 +134,13 @@ class TestEvaluationCacheIntegration:
 
     def test_caching_does_not_break_optimization(self, tmp_path):
         """Verify that caching doesn't break the optimization process."""
-        import gepa
+        import async_gepa
 
         trainset = [{"id": i} for i in range(5)]
         valset = [{"id": i} for i in range(5)]
         seed = {"system_prompt": "test"}
 
-        result_no_cache = gepa.optimize(
+        result_no_cache = async_gepa.optimize(
             seed_candidate=seed,
             trainset=trainset,
             valset=valset,
@@ -150,7 +150,7 @@ class TestEvaluationCacheIntegration:
             run_dir=str(tmp_path / "no_cache"),
             cache_evaluation=False,
         )
-        result_with_cache = gepa.optimize(
+        result_with_cache = async_gepa.optimize(
             seed_candidate=seed,
             trainset=trainset,
             valset=valset,
@@ -188,13 +188,13 @@ def test_aime_prompt_optimize_with_cache(mocked_lms, recorder_dir):
     Tests the GEPA optimization process with evaluation caching enabled.
     Uses the same recorded/replayed LLM calls as the non-cached test.
     """
-    import gepa
-    from gepa.adapters.default_adapter.default_adapter import DefaultAdapter
+    import async_gepa
+    from async_gepa.adapters.default_adapter.default_adapter import DefaultAdapter
 
     task_lm, reflection_lm = mocked_lms
     adapter = DefaultAdapter(model=task_lm)
 
-    trainset, valset, _ = gepa.examples.aime.init_dataset()
+    trainset, valset, _ = async_gepa.examples.aime.init_dataset()
     trainset = trainset[:10]
     valset = valset[:10]
 
@@ -203,7 +203,7 @@ def test_aime_prompt_optimize_with_cache(mocked_lms, recorder_dir):
     }
 
     # Run with cache_evaluation=True
-    gepa_result = gepa.optimize(
+    gepa_result = async_gepa.optimize(
         seed_candidate=seed_prompt,
         trainset=trainset,
         valset=valset,
@@ -252,8 +252,8 @@ def test_pareto_frontier_type_with_cache(pareto_mocked_lms, pareto_recorder_dir,
 
     from datasets import load_dataset
 
-    import gepa
-    from gepa.adapters.default_adapter.default_adapter import (
+    import async_gepa
+    from async_gepa.adapters.default_adapter.default_adapter import (
         DefaultAdapter,
         DefaultDataInst,
         EvaluationResult,
@@ -326,7 +326,7 @@ def test_pareto_frontier_type_with_cache(pareto_mocked_lms, pareto_recorder_dir,
 
     seed_prompt = {"system_prompt": "You are a helpful assistant."}
 
-    gepa_result = gepa.optimize(
+    gepa_result = async_gepa.optimize(
         seed_candidate=seed_prompt,
         trainset=trainset,
         valset=valset,

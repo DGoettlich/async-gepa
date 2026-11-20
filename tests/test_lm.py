@@ -9,7 +9,7 @@ import litellm
 import openai
 import pytest
 
-from gepa.lm import LM, LMOutput
+from async_gepa.lm import LM, LMOutput
 
 
 class TestLMInit:

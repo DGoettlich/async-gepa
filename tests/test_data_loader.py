@@ -1,7 +1,7 @@
 from typing import Sequence
 
-from gepa.core.adapter import DataInst
-from gepa.core.data_loader import ListDataLoader
+from async_gepa.core.adapter import DataInst
+from async_gepa.core.data_loader import ListDataLoader
 
 
 class StagedDataLoader(ListDataLoader):

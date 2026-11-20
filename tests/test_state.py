@@ -8,11 +8,11 @@ from unittest.mock import MagicMock
 
 import pytest
 
-import gepa
-import gepa.core.state as state_mod
-from gepa.core.adapter import EvaluationBatch
-from gepa.core.state import ValsetEvaluation
-from gepa.strategies.eval_policy import EvaluationPolicy, FullEvaluationPolicy
+import async_gepa
+import async_gepa.core.state as state_mod
+from async_gepa.core.adapter import EvaluationBatch
+from async_gepa.core.state import ValsetEvaluation
+from async_gepa.strategies.eval_policy import EvaluationPolicy, FullEvaluationPolicy
 
 
 @pytest.mark.parametrize("frontier_type", ["objective", "hybrid", "cartesian"])
@@ -368,7 +368,7 @@ def test_agent_state_rejected_proposals(run_dir):
 def test_agent_state_e2e_writes_per_iteration_outputs_and_trajectories(run_dir):
     """Running the engine with write_agent_state=True writes per-iteration
     outputs/ and trajectories/ under iterations/<iter_id>/."""
-    import gepa as gepa_mod
+    import async_gepa as gepa_mod
 
     trainset = [{"id": i, "difficulty": i + 2} for i in range(2)]
     valset = [{"id": i, "difficulty": i + 2} for i in range(2)]
@@ -423,7 +423,7 @@ def test_agent_state_e2e_writes_per_iteration_outputs_and_trajectories(run_dir):
 
 def test_agent_state_off_does_not_write_outputs(run_dir):
     """With write_agent_state=False (default), no outputs/ subtree is produced."""
-    import gepa as gepa_mod
+    import async_gepa as gepa_mod
 
     trainset = [{"id": 0, "difficulty": 2}]
     valset = [{"id": 0, "difficulty": 2}]
@@ -645,7 +645,7 @@ def test_dynamic_validation(run_dir, rng):
             return state.get_program_average_val_subset(program_idx)[0]
 
     init_validation_policy = InitValidationPolicy()
-    gepa.optimize(
+    async_gepa.optimize(
         seed_candidate=seed_candidate,
         trainset=trainset,
         valset=valset_initial,
@@ -684,7 +684,7 @@ def test_dynamic_validation(run_dir, rng):
 
     best_stage1_candidate_idx = init_validation_policy.get_best_program(state_phase_one)
     best_stage1_candidate = state_phase_one.program_candidates[best_stage1_candidate_idx]
-    gepa.optimize(
+    async_gepa.optimize(
         seed_candidate=best_stage1_candidate,
         trainset=trainset,
         valset=extended_valset,
@@ -818,7 +818,7 @@ def test_upgrade_state_dict_maps_legacy_candidates_without_accepted_flag():
 
 def test_existing_adapters_lack_adapter_state_methods():
     """DefaultAdapter doesn't define get/set_adapter_state — duck typing is safe."""
-    from gepa.adapters.default_adapter.default_adapter import DefaultAdapter
+    from async_gepa.adapters.default_adapter.default_adapter import DefaultAdapter
 
     assert getattr(DefaultAdapter, "get_adapter_state", None) is None
     assert getattr(DefaultAdapter, "set_adapter_state", None) is None
@@ -902,20 +902,20 @@ def recorder_dir() -> Path:
 
 def test_e2e_resume_run(mocked_lms, run_dir):
     """E2E tests for resuming a previous run from a run_dir."""
-    import gepa
-    from gepa.adapters.default_adapter.default_adapter import DefaultAdapter
+    import async_gepa
+    from async_gepa.adapters.default_adapter.default_adapter import DefaultAdapter
 
     # 1. Setup: Unpack fixtures and load data
     task_lm, reflection_lm = mocked_lms
     adapter = DefaultAdapter(model=task_lm)
-    trainset, valset, _ = gepa.examples.aime.init_dataset()
+    trainset, valset, _ = async_gepa.examples.aime.init_dataset()
     trainset = trainset[:10]
     valset = valset[:10]  # [3:8]
     seed_prompt = {
         "system_prompt": "You are a helpful assistant. You are given a question and you need to answer it. The answer should be given at the end of your response in exactly the format '### <final answer>'"
     }
 
-    first_run = gepa.optimize(
+    first_run = async_gepa.optimize(
         seed_candidate=seed_prompt,
         trainset=trainset,
         valset=valset,
@@ -928,7 +928,7 @@ def test_e2e_resume_run(mocked_lms, run_dir):
 
     # Resume from the same run_dir. Even if called with `max_metric_calls=0`,
     # the result should have `total_metric_calls` equal to the amount from the previous run.
-    second_run = gepa.optimize(
+    second_run = async_gepa.optimize(
         seed_candidate=seed_prompt,
         trainset=trainset,
         valset=valset,
@@ -972,7 +972,7 @@ def test_resume_skips_seed_valset_evaluation(run_dir):
     valset = [{"id": i, "difficulty": i + 2} for i in range(10)]
     seed_candidate = {"system_prompt": "weight=0"}
 
-    first_run = gepa.optimize(
+    first_run = async_gepa.optimize(
         seed_candidate=seed_candidate,
         trainset=trainset,
         valset=valset,
@@ -986,7 +986,7 @@ def test_resume_skips_seed_valset_evaluation(run_dir):
     assert saved_state.total_num_evals == first_run.total_metric_calls
 
     resume_adapter = _CountingAdapter()
-    second_run = gepa.optimize(
+    second_run = async_gepa.optimize(
         seed_candidate=seed_candidate,
         trainset=trainset,
         valset=valset,
@@ -1009,7 +1009,7 @@ def test_resume_different_seed_is_full_eval_and_added(run_dir):
     seed_candidate = {"system_prompt": "weight=0"}
     new_seed = {"system_prompt": "weight=99"}
 
-    gepa.optimize(
+    async_gepa.optimize(
         seed_candidate=seed_candidate,
         trainset=trainset,
         valset=valset,
@@ -1024,7 +1024,7 @@ def test_resume_different_seed_is_full_eval_and_added(run_dir):
     n_full = saved_state.num_full_ds_evals
 
     resume_adapter = _CountingAdapter()
-    second_run = gepa.optimize(
+    second_run = async_gepa.optimize(
         seed_candidate=new_seed,
         trainset=trainset,
         valset=valset,
@@ -1052,7 +1052,7 @@ def test_resume_different_seed_not_readded_on_third_call(run_dir):
     seed_candidate = {"system_prompt": "weight=0"}
     new_seed = {"system_prompt": "weight=99"}
 
-    gepa.optimize(
+    async_gepa.optimize(
         seed_candidate=seed_candidate,
         trainset=trainset,
         valset=valset,
@@ -1061,7 +1061,7 @@ def test_resume_different_seed_not_readded_on_third_call(run_dir):
         max_metric_calls=10,
         run_dir=str(run_dir),
     )
-    second = gepa.optimize(
+    second = async_gepa.optimize(
         seed_candidate=new_seed,
         trainset=trainset,
         valset=valset,
@@ -1074,7 +1074,7 @@ def test_resume_different_seed_not_readded_on_third_call(run_dir):
     assert new_seed_count == 1
 
     resume_adapter = _CountingAdapter()
-    third = gepa.optimize(
+    third = async_gepa.optimize(
         seed_candidate=new_seed,
         trainset=trainset,
         valset=valset,

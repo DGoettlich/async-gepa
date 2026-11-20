@@ -3,7 +3,7 @@ import sys
 
 import pytest
 
-from gepa.proposer.merge import find_common_ancestor_pair, sample_and_attempt_merge_programs_by_common_predictors
+from async_gepa.proposer.merge import find_common_ancestor_pair, sample_and_attempt_merge_programs_by_common_predictors
 
 
 @pytest.mark.parametrize("shared_parents", [False, True])
