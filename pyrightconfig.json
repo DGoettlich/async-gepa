@@ -4,15 +4,15 @@
   ],
   "typeCheckingMode": "standard",
   "exclude": [
-    "src/gepa/adapters/dspy_adapter",
-    "src/gepa/adapters/dspy_full_program_adapter",
-    "src/gepa/examples",
-    "src/gepa/adapters/generic_rag_adapter",
-    "src/gepa/adapters/anymaths_adapter",
-    "src/gepa/adapters/terminal_bench_adapter",
-    "src/gepa/adapters/confidence_adapter",
-    "src/gepa/adapters/langchain_adapter",
-    "src/gepa/gskill",
+    "src/async_gepa/adapters/dspy_adapter",
+    "src/async_gepa/adapters/dspy_full_program_adapter",
+    "src/async_gepa/examples",
+    "src/async_gepa/adapters/generic_rag_adapter",
+    "src/async_gepa/adapters/anymaths_adapter",
+    "src/async_gepa/adapters/terminal_bench_adapter",
+    "src/async_gepa/adapters/confidence_adapter",
+    "src/async_gepa/adapters/langchain_adapter",
+    "src/async_gepa/gskill",
     "tests"
   ]
 }
