@@ -144,7 +144,11 @@ from async_gepa.proposer.merge import MergeProposer
 from async_gepa.proposer.reflective_mutation.base import CandidateSelector, LanguageModel, ReflectionComponentSelector
 from async_gepa.proposer.reflective_mutation.reflection_lm import ReflectionLM
 from async_gepa.proposer.reflective_mutation.reflective_mutation import ReflectiveMutationProposer
-from async_gepa.strategies.acceptance import AcceptanceCriterion, ImprovementOrEqualAcceptance, StrictImprovementAcceptance
+from async_gepa.strategies.acceptance import (
+    AcceptanceCriterion,
+    ImprovementOrEqualAcceptance,
+    StrictImprovementAcceptance,
+)
 from async_gepa.strategies.batch_sampler import BatchSampler, EpochShuffledBatchSampler
 from async_gepa.strategies.candidate_selector import (
     CurrentBestCandidateSelector,
