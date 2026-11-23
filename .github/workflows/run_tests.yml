@@ -211,6 +211,8 @@ jobs:
         run: uv sync -p .venv --locked --extra dev
       - name: Build
         run: uv run -p .venv python -m build
+      - name: Check package metadata
+        run: uv run --no-sync python -m twine check --strict dist/*
       - name: Install built package
         run: uv pip install dist/*.whl -p .venv
       - name: Test import async_gepa

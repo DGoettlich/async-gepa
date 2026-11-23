@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/async-gepa-logo.png" alt="AsyncGEPA" width="450">
+  <img src="https://raw.githubusercontent.com/DGoettlich/async-gepa/main/assets/async-gepa-logo.png" alt="AsyncGEPA" width="450">
 </p>
 
 An experimental fork of [GEPA](https://github.com/gepa-ai/gepa) with continuous asynchronous rollouts.
@@ -39,11 +39,11 @@ print(result.best_candidate)
 
 The adapter implements `async def evaluate(...)`, retaining GEPA's inputs and result format. Omit `scheduler` and use a synchronous adapter for standard GEPA execution.
 
-See the [practical guide](docs/usage.md) for adapting your evaluator, configuring concurrency and using custom strategies.
+See the [practical guide](https://github.com/DGoettlich/async-gepa/blob/main/docs/usage.md) for adapting your evaluator, configuring concurrency and using custom strategies.
 
 ## How it works
 
-![GEPA, batched GEPA and AsyncGEPA scheduling](assets/async-gepa-scheduling.png)
+![GEPA, batched GEPA and AsyncGEPA scheduling](https://raw.githubusercontent.com/DGoettlich/async-gepa/main/assets/async-gepa-scheduling.png)
 
 *Conceptual scheduling illustration; not measured timings.*
 
@@ -53,6 +53,6 @@ All ready evaluation requests enter a **shared FIFO queue**. When a request fini
 
 Selection still follows the configured strategy: `AllImprovements` can advance individual improvements immediately, while strategies that compare siblings wait for their group.
 
-- **[Practical guide](docs/usage.md):** execution modes, adapters, concurrency and custom strategies.
-- **[API reference](docs/api.md):** async classes, their interfaces and changes from GEPA.
+- **[Practical guide](https://github.com/DGoettlich/async-gepa/blob/main/docs/usage.md):** execution modes, adapters, concurrency and custom strategies.
+- **[API reference](https://github.com/DGoettlich/async-gepa/blob/main/docs/api.md):** async classes, their interfaces and changes from GEPA.
 - **[Upstream GEPA documentation](https://gepa.dev/):** optimization concepts and unchanged functionality.
