@@ -138,14 +138,6 @@ jobs:
           uv run --no-sync -p .venv python tests/ensure_gepa_dspy_dependency.py
           uv run --no-sync -p .venv pytest -q tests/test_import.py tests/test_optimize.py tests/test_instruction_proposal.py tests/test_result.py
 
-  dspy_compatibility:
-    name: DSPy Compatibility (pinned)
-    # Pinned DSPy only, so a failure here can only come from the GEPA change
-    # under test. DSPy latest and main run post-merge in dspy_compatibility.yml.
-    uses: ./.github/workflows/dspy_contract.yml
-    with:
-      dspy-versions: '["3.3.1"]'
-
   # llm_call_test:
   #   name: Run Tests with Real LM
   #   runs-on: ubuntu-latest

@@ -7,8 +7,8 @@ name = "async-gepa"
 version = "0.1.0a1"
 description = "An experimental GEPA fork with continuous asynchronous rollouts."
 readme = "README.md"
-authors = [{ name = "Daniel Goettlich" }]
-maintainers = [{ name = "Daniel Goettlich" }]
+authors = [{ name = "Daniel Göttlich" }]
+maintainers = [{ name = "Daniel Göttlich" }]
 license = "MIT"
 license-files = ["LICENSE"]
 classifiers = ["Development Status :: 3 - Alpha"]

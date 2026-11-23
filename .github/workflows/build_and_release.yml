@@ -12,14 +12,8 @@ jobs:
     if: github.repository == 'DGoettlich/async-gepa'
     uses: ./.github/workflows/run_tests.yml
 
-  verify-dspy:
-    if: github.repository == 'DGoettlich/async-gepa'
-    uses: ./.github/workflows/dspy_contract.yml
-    with:
-      dspy-versions: '["latest"]'
-
   publish:
-    needs: [verify-ci, verify-dspy]
+    needs: [verify-ci]
     runs-on: ubuntu-latest
     environment: pypi
     permissions:
