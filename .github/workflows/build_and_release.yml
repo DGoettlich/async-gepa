@@ -49,7 +49,8 @@ jobs:
       - name: Verify installed wheel
         run: |
           uv venv "$RUNNER_TEMP/package-check"
-          uv pip install --python "$RUNNER_TEMP/package-check/bin/python" dist/*.whl
+          wheel=(dist/*.whl)
+          uv pip install --python "$RUNNER_TEMP/package-check/bin/python" "${wheel[0]}[test]"
           cd "$RUNNER_TEMP"
           uv run --no-project --no-sync --python "$RUNNER_TEMP/package-check/bin/python" python - <<'PY'
           import os
@@ -60,5 +61,10 @@ jobs:
 
           assert version("async-gepa") == os.environ["GITHUB_REF_NAME"][1:]
           PY
+      - name: Test installed wheel
+        run: |
+          cd "$RUNNER_TEMP"
+          uv run --no-project --python "$RUNNER_TEMP/package-check/bin/python" python -m pytest \
+            -m "not llm_live and not extra" "$GITHUB_WORKSPACE/tests/"
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@dc37677b2e1c63e2034f94d8a5b11f265b73ba33 # release/v1
