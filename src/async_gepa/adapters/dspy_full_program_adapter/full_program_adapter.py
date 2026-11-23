@@ -355,7 +355,9 @@ class DspyAdapter(GEPAAdapter[Example, TraceData, Prediction]):
         reflective_dataset: dict[str, list[dict[str, Any]]],
         components_to_update: list[str],
     ) -> dict[str, str]:
-        from async_gepa.adapters.dspy_full_program_adapter.dspy_program_proposal_signature import DSPyProgramProposalSignature
+        from async_gepa.adapters.dspy_full_program_adapter.dspy_program_proposal_signature import (
+            DSPyProgramProposalSignature,
+        )
 
         new_texts: dict[str, str] = {}
         for name in components_to_update:
