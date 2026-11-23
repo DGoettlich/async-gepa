@@ -45,8 +45,6 @@ See the [practical guide](https://github.com/DGoettlich/async-gepa/blob/main/doc
 
 ![GEPA, batched GEPA and AsyncGEPA scheduling](https://raw.githubusercontent.com/DGoettlich/async-gepa/main/assets/async-gepa-scheduling.png)
 
-*Conceptual scheduling illustration; not measured timings.*
-
 GEPA advances one proposal at a time. Batched GEPA processes multiple proposals through coordinated stages. AsyncGEPA lets proposals advance independently as their dependencies finish.
 
 All ready evaluation requests enter a **shared FIFO queue**. When a request finishes, another queued request can take the available slot—even if it belongs to a different proposal. Reflection can therefore overlap evaluation, and slow requests do not hold up unrelated work.
